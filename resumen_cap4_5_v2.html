@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis Conjunto y Conclusiones | Diagnóstico EPIG Bilbao</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<style>
+:root{
+  --purple-dark:#4A1070;--purple:#7B2D8E;--fuchsia:#C2185B;--red:#E53935;
+  --orange:#FF6F00;--amber:#FFB300;--yellow:#FFD54F;--green:#43a047;
+  --bg:#faf8fc;--text:#2d1b4e;--text-light:#6b5b7b;--text-muted:#9b8bab;
+  --card:#ffffff;--border:#e8ddf0;
+  --gradient:linear-gradient(135deg,#4A1070,#7B2D8E,#C2185B,#E53935,#FF6F00,#FFB300,#FFD54F);
+  --gradient-h:linear-gradient(90deg,#4A1070,#7B2D8E,#C2185B,#E53935,#FF6F00,#FFB300,#FFD54F);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat','Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:16px}
+
+/* HEADER */
+.hero{background:var(--gradient);padding:3rem 2rem 2.5rem;color:white;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,transparent 100%)}
+.hero-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
+.hero h1{font-size:1.8rem;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.18);margin-bottom:.3rem}
+.hero .subtitle{font-size:.92rem;font-weight:400;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.15)}
+
+/* NAV */
+nav{background:white;border-bottom:3px solid transparent;border-image:var(--gradient-h) 1;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(74,16,112,.08);overflow-x:auto}
+nav .nav-inner{max-width:900px;margin:0 auto;display:flex;gap:0}
+nav a{padding:.75rem 1.1rem;font-size:.78rem;font-weight:600;color:var(--text-light);text-decoration:none;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;white-space:nowrap}
+nav a:hover{color:var(--purple)}
+nav a.active{color:var(--purple-dark);border-bottom-color:var(--purple)}
+
+/* MAIN */
+main{max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+/* SECTION DIVIDER */
+.divider{margin:3rem 0 2rem;text-align:center;padding:2rem 0;position:relative}
+.divider::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gradient-h);border-radius:2px}
+.divider h2{font-size:1.5rem;font-weight:800;color:var(--purple-dark);margin-top:1rem;letter-spacing:-.01em}
+.divider p{color:var(--text-light);font-size:.88rem;margin-top:.3rem}
+
+/* SECTION */
+section{background:var(--card);border-radius:12px;padding:2rem 2.5rem;margin-bottom:1.5rem;border:1px solid var(--border);box-shadow:0 1px 4px rgba(74,16,112,.04)}
+section h2{font-size:1.15rem;font-weight:700;color:var(--purple-dark);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border)}
+section h3{font-size:.95rem;font-weight:700;color:var(--fuchsia);margin:1.5rem 0 .6rem}
+section p{font-size:.88rem;margin-bottom:.8rem}
+section strong{color:var(--purple-dark)}
+
+/* CHART WRAP */
+.cw{background:var(--bg);border-radius:10px;padding:1.5rem;margin:1.2rem 0;border:1px solid var(--border)}
+.cw .ct{font-size:.9rem;font-weight:700;color:var(--purple-dark);margin-bottom:.15rem}
+.cw .cs{font-size:.75rem;color:var(--text-muted);margin-bottom:1rem}
+.cw canvas{max-height:380px}
+.chart-row{display:flex;gap:1rem;margin:1.2rem 0}
+.chart-row .cw{flex:1}
+
+/* STAT ROW */
+.sr{display:flex;gap:.8rem;margin:1rem 0;flex-wrap:wrap}
+.sc{background:var(--bg);border-radius:8px;padding:.8rem 1rem;flex:1;min-width:110px;border:1px solid var(--border);text-align:center}
+.sc .sv{font-size:1.8rem;font-weight:900;line-height:1.1}
+.sc .sl{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-top:.15rem}
+.sc.pu .sv{color:var(--purple)} .sc.fu .sv{color:var(--fuchsia)} .sc.or .sv{color:var(--orange)} .sc.gr .sv{color:var(--green)} .sc.re .sv{color:var(--red)}
+
+/* HIGHLIGHT BOX */
+.hb{border-radius:10px;padding:1.3rem 1.5rem;margin:1.2rem 0;font-size:.88rem;line-height:1.65}
+.hb.purple{background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white}
+.hb.purple strong{color:var(--yellow)}
+.hb.fuchsia{background:linear-gradient(135deg,var(--fuchsia),var(--red));color:white}
+.hb.fuchsia strong{color:var(--yellow)}
+.hb.light{background:var(--bg);border:2px solid var(--purple);color:var(--text)}
+
+/* PROGRESS TABLE */
+.pt{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.82rem}
+.pt td,.pt th{padding:.45rem .6rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.pt th{text-align:left;font-weight:700;color:var(--text-light);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+.pb{height:16px;background:var(--border);border-radius:8px;overflow:hidden;position:relative}
+.pb .f{height:100%;border-radius:8px}
+.pb .pct{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:.65rem;font-weight:700;color:var(--text)}
+
+/* SEMÁFORO */
+.sem{display:flex;gap:1.2rem;margin:1.2rem 0}
+.sem-c{flex:1;border-radius:10px;padding:1.1rem}
+.sem-c.g{background:#e8f5e9;border:1px solid #a5d6a7}
+.sem-c.r{background:#fce4ec;border:1px solid #ef9a9a}
+.sem-c h4{font-size:.85rem;margin-bottom:.6rem}
+.sem-c.g h4{color:var(--green)} .sem-c.r h4{color:var(--red)}
+.si{display:flex;justify-content:space-between;align-items:center;padding:.35rem 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:.82rem}
+.si:last-child{border-bottom:none}
+.sb{font-weight:700;font-size:.75rem;padding:.1rem .45rem;border-radius:15px;color:white}
+.sem-c.g .sb{background:var(--green)} .sem-c.r .sb{background:var(--red)}
+
+/* FLOW */
+.fl{background:var(--bg);border-radius:10px;padding:1.5rem;margin:1.2rem 0;border:1px solid var(--border)}
+.fl-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.6rem;flex-wrap:wrap}
+.fl-label{font-weight:700;font-size:.75rem;color:var(--text-muted);width:95px;flex-shrink:0;text-transform:uppercase;letter-spacing:.04em}
+.fb{padding:.4rem .8rem;border-radius:6px;font-size:.78rem;font-weight:600;text-align:center;min-width:85px;color:white}
+.fb.pu{background:var(--purple)} .fb.fu{background:var(--fuchsia)} .fb.re{background:var(--red)} .fb.gr{background:var(--green)} .fb.sand{background:var(--border);color:var(--text)}
+.fl-arrow{font-size:1rem;color:var(--text-muted)}
+.fl-note{font-size:.72rem;margin-top:.15rem;margin-left:95px}
+
+/* HEATMAP TABLE */
+.ht{width:100%;border-collapse:collapse;font-size:.82rem;margin:1rem 0}
+.ht th{font-weight:700;padding:.45rem .4rem;text-align:center;font-size:.7rem;color:var(--text-light);border-bottom:2px solid var(--border)}
+.ht th:first-child{text-align:left}
+.ht td{padding:.45rem .4rem;text-align:center;border-bottom:1px solid var(--border);font-weight:600}
+.ht td:first-child{text-align:left;font-weight:400;font-size:.8rem}
+.ht .h0{background:var(--bg);color:var(--text-muted)} .ht .h1{background:#f3e5f5;color:var(--purple)} .ht .h2{background:#e1bee7;color:var(--purple-dark)} .ht .h3{background:var(--purple);color:white} .ht .tc{font-weight:700;color:var(--purple-dark);background:#f3e5f5}
+
+/* EXENCION TABLE */
+.et{width:100%;border-collapse:collapse;font-size:.82rem;margin:1rem 0}
+.et th{background:var(--purple-dark);color:white;padding:.55rem .65rem;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+.et td{padding:.45rem .65rem;border-bottom:1px solid var(--border);vertical-align:top}
+.lb{display:inline-block;font-size:.67rem;font-weight:700;padding:.12rem .4rem;border-radius:4px;white-space:nowrap}
+.lb.l1{background:#e3f2fd;color:#1565c0} .lb.l2{background:#fff8e1;color:#e65100} .lb.l3{background:#f3e5f5;color:var(--purple)}
+
+/* AREA CARDS */
+.ac-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0}
+.ac{background:var(--bg);border-radius:10px;padding:1rem 1.2rem;border:1px solid var(--border)}
+.ac .an{font-weight:700;font-size:.88rem;color:var(--purple-dark);margin-bottom:.3rem}
+.ac .am{font-size:.75rem;color:var(--text-muted);margin-bottom:.4rem}
+.ac p{font-size:.8rem;color:var(--text-light);margin:0;line-height:1.45}
+.at{display:inline-block;font-size:.65rem;padding:.1rem .35rem;border-radius:3px;font-weight:700;margin-right:.15rem}
+.at.t1{background:#e8f5e9;color:var(--green)} .at.t2{background:#fce4ec;color:var(--red)} .at.t59{background:#fff8e1;color:var(--orange)}
+
+/* ESCALERA */
+.esc{display:flex;flex-direction:column;gap:0;margin:1.2rem 0}
+.es{display:flex;align-items:stretch;min-height:65px}
+.es-n{width:48px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:white;border-radius:8px 0 0 8px;flex-shrink:0}
+.es-b{flex:1;padding:.75rem 1rem;border-radius:0 8px 8px 0;border:1px solid var(--border);border-left:none}
+.es-b h4{font-weight:700;font-size:.88rem;margin-bottom:.15rem;color:var(--purple-dark)}
+.es-b p{font-size:.78rem;color:var(--text-light);margin:0;line-height:1.4}
+.es:nth-child(1) .es-n{background:var(--border);color:var(--text-muted)}
+.es:nth-child(2) .es-n{background:var(--purple)}
+.es:nth-child(3) .es-n{background:var(--fuchsia)}
+.es:nth-child(4) .es-n{background:var(--purple-dark)}
+.es.rec{outline:2px solid var(--purple);outline-offset:2px;border-radius:8px}
+.es.rec .es-b::after{content:'✦ RECOMENDADA';display:inline-block;font-size:.62rem;font-weight:700;color:var(--purple);letter-spacing:.06em;margin-top:.25rem}
+
+/* ACCORDIONS (5.5) */
+details{margin:.8rem 0;border-radius:10px;background:var(--card);border:1px solid var(--border);overflow:hidden;transition:all .3s}
+details[open]{box-shadow:0 3px 14px rgba(74,16,112,.08)}
+details summary{cursor:pointer;padding:.9rem 1.3rem;font-weight:700;font-size:.92rem;color:var(--purple-dark);list-style:none;display:flex;align-items:center;gap:.7rem;transition:background .2s}
+details summary:hover{background:#faf5ff}
+details summary::-webkit-details-marker{display:none}
+details summary::before{content:'▸';color:var(--fuchsia);font-size:1.1rem;transition:transform .2s;flex-shrink:0}
+details[open] summary::before{transform:rotate(90deg)}
+.dc{padding:0 1.3rem 1.3rem}
+.dc p{font-size:.88rem;line-height:1.65;margin-bottom:.7rem}
+.dl{display:inline-block;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.18rem .55rem;border-radius:4px;margin-bottom:.5rem}
+.dl.prob{background:#fce4ec;color:var(--red)}
+.dl.prop{background:#e8f5e9;color:var(--green)}
+.dl.rec{background:#f3e5f5;color:var(--purple)}
+.dc ul{margin:.4rem 0 .8rem 1.1rem;font-size:.86rem;line-height:1.55}
+.dc li{margin-bottom:.35rem}
+
+/* DECISION MAP (5.6) */
+.dm-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.2rem 0}
+.dm{border-radius:10px;padding:1.2rem 1.3rem;position:relative;overflow:hidden}
+.dm::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.dm.d1{background:#f3e5f5}.dm.d1::before{background:var(--purple)}
+.dm.d2{background:#fce4ec}.dm.d2::before{background:var(--fuchsia)}
+.dm.d3{background:#fff3e0}.dm.d3::before{background:var(--orange)}
+.dm.d4{background:#e8f5e9}.dm.d4::before{background:var(--green)}
+.dm h4{font-weight:700;font-size:.9rem;color:var(--purple-dark);margin-bottom:.4rem}
+.dm p{font-size:.82rem;color:var(--text-light);margin:0;line-height:1.45}
+.dm .dm-t{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.dm.d1 .dm-t{color:var(--purple)} .dm.d2 .dm-t{color:var(--fuchsia)}
+.dm.d3 .dm-t{color:var(--orange)} .dm.d4 .dm-t{color:var(--green)}
+
+@media(max-width:800px){nav .nav-inner{overflow-x:auto}main{padding:1rem .8rem 4rem}.chart-row,.sem,.ac-grid,.dm-grid{flex-direction:column;grid-template-columns:1fr}section{padding:1.3rem 1rem}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Diagnóstico de Calidad de las Evaluaciones Previas de Impacto de Género</h1>
+    <div class="subtitle">Ayuntamiento de Bilbao — Análisis conjunto, conclusiones y propuestas de mejora</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+<div class="nav-inner">
+  <a href="#ac" class="active">Análisis conjunto</a>
+  <a href="#s_muestra">Muestra</a>
+  <a href="#s_icd">Calidad diagnóstica</a>
+  <a href="#s_iim">Medidas</a>
+  <a href="#s_rel">Diagnóstico–Medidas</a>
+  <a href="#s_verif">Verificación</a>
+  <a href="#s_exen">Exenciones</a>
+  <a href="#s_areas">Áreas</a>
+  <a href="#conc">Conclusiones</a>
+  <a href="#s_prop">Propuestas</a>
+</div>
+</nav>
+
+<main>
+
+<!-- ═════════════ ANÁLISIS CONJUNTO ═════════════ -->
+<div class="divider" id="ac">
+  <h2>Análisis conjunto</h2>
+  <p>Hallazgos, patrones y propuestas para la reforma de las Directrices</p>
+</div>
+
+<!-- MUESTRA -->
+<section id="s_muestra">
+<h2>Caracterización de la muestra analizada</h2>
+<p>La muestra comprende <strong>26 expedientes</strong> (27 registros) de <strong>ocho áreas municipales</strong> — el universo completo facilitado por el Área de Igualdad, lo que confiere al análisis una representatividad institucional plena.</p>
+<div class="sr">
+  <div class="sc gr"><div class="sv">15</div><div class="sl">Anexo I — Evaluación completa</div></div>
+  <div class="sc re"><div class="sv">8</div><div class="sl">Anexo 2 — Exención</div></div>
+  <div class="sc or"><div class="sv">4</div><div class="sl">Art. 59.2B PGOU</div></div>
+</div>
+<div class="cw"><div class="ct">Distribución por itinerario</div><canvas id="c_donut" height="240"></canvas></div>
+
+<h3>El hallazgo de los informes de soportales</h3>
+<p>Los 4 expedientes del art. 59.2B proceden de Planificación Urbana: solicitudes de cerramiento de soportales por inseguridad. No son disposiciones generales, sino actos singulares regulados por el PGOU. Revelan una <strong>fortaleza institucional</strong> (el PGOU integra la perspectiva de género en el diseño urbano) y una <strong>laguna de las Directrices</strong> (no existe itinerario procedimental). Se propone un anexo específico en las nuevas Directrices.</p>
+
+<h3>Distribución por áreas municipales</h3>
+<div class="cw"><div class="ct">Expedientes por área y tipo de itinerario</div>
+<table class="ht"><thead><tr><th style="width:40%">Área</th><th>Anexo I</th><th>Anexo 2</th><th>Art. 59.2B</th><th>Total</th></tr></thead><tbody>
+<tr><td>Planificación Urbana</td><td class="h1">1</td><td class="h2">2</td><td class="h3">4</td><td class="tc">7</td></tr>
+<tr><td>Euskera, Participación, Agenda 2030</td><td class="h3">4</td><td class="h1">1</td><td class="h0">—</td><td class="tc">5</td></tr>
+<tr><td>Movilidad y Sostenibilidad</td><td class="h2">3</td><td class="h2">2</td><td class="h0">—</td><td class="tc">5</td></tr>
+<tr><td>Salud y Consumo</td><td class="h2">2</td><td class="h2">2</td><td class="h0">—</td><td class="tc">4</td></tr>
+<tr><td>Acción Social</td><td class="h2">2</td><td class="h0">—</td><td class="h0">—</td><td class="tc">2</td></tr>
+<tr><td>Cultura y Gobernanza</td><td class="h2">2</td><td class="h0">—</td><td class="h0">—</td><td class="tc">2</td></tr>
+<tr><td>Derechos Humanos y Cooperación</td><td class="h1">1</td><td class="h0">—</td><td class="h0">—</td><td class="tc">1</td></tr>
+<tr><td>Hacienda</td><td class="h0">—</td><td class="h1">1</td><td class="h0">—</td><td class="tc">1</td></tr>
+<tr style="font-weight:700;border-top:2px solid var(--purple)"><td>Total</td><td class="tc">15</td><td class="tc">8</td><td class="tc">4</td><td class="tc">27</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- ICD -->
+<section id="s_icd">
+<h2>Panorámica del Índice de Calidad Diagnóstica (ICD)</h2>
+<p>El bloque diagnóstico evalúa 5 dimensiones × 2 vertientes = 10 celdas (0–3 cada una, máx. 30). Los valores 1 y 2 indican ambos margen de mejora; la diferencia es si la verificación lo detectó (1) o no (2).</p>
+<div class="sr">
+  <div class="sc pu"><div class="sv">22</div><div class="sl">Mediana</div></div>
+  <div class="sc"><div class="sv">20,0</div><div class="sl">Media</div></div>
+  <div class="sc gr"><div class="sv">29</div><div class="sl">Máximo</div></div>
+  <div class="sc re"><div class="sv">8</div><div class="sl">Mínimo</div></div>
+</div>
+<div class="cw"><div class="ct">ICD de los 15 expedientes de Anexo I</div><canvas id="c_icd" height="320"></canvas></div>
+
+<h3>Análisis por dimensión</h3>
+<div class="cw"><div class="ct">Distribución por dimensión y vertiente</div><div class="cs">Cada barra = 15 expedientes · Adecuado / Mejorable / Omisión</div><canvas id="c_dim" height="360"></canvas></div>
+<p><strong>D1 Presencia</strong> es la mejor cubierta (0 omisiones). <strong>D2 Participación-Situación</strong> es la más problemática (5 omisiones, solo 2 adecuados). <strong>D3 Recursos</strong> concentra el mayor volumen de aspectos mejorables. <strong>D5 Normativa</strong> tiene perfil polarizado: o se hace bien o se omite.</p>
+
+<h3>Situación vs. previsión de impacto</h3>
+<div class="chart-row">
+  <div class="cw"><div class="ct">Diagnóstico de situación</div><canvas id="c_sit" height="200"></canvas></div>
+  <div class="cw"><div class="ct">Previsión de impacto</div><canvas id="c_prev" height="200"></canvas></div>
+</div>
+<div class="hb purple">La previsión alcanza el adecuado con mayor frecuencia (42,7%) que el diagnóstico de situación (33,3%). Comprometerse es más accesible que fundamentar. <strong>Es la diferencia entre declarar la igualdad y construirla con evidencias.</strong></div>
+
+<h3>El ángulo ciego de la verificación</h3>
+<div class="cw"><div class="ct">Aspectos mejorables recogidos por la verificación</div><div class="cs">De 73 celdas con margen de mejora, solo 17 fueron incorporadas al dictamen (23,3%)</div>
+<table class="pt"><thead><tr><th>Dimensión</th><th>Mejorables</th><th>Recogidas</th><th style="width:35%">% recogido</th></tr></thead><tbody id="pb42"></tbody></table></div>
+</section>
+
+<!-- IIM -->
+<section id="s_iim">
+<h2>Panorámica del Índice de Intensidad de Medidas (IIM)</h2>
+<p>37 medidas en 7 grupos (A–G). Solo se codifica como activada una acción específica y verificable del propio documento evaluado.</p>
+<div class="sr">
+  <div class="sc pu"><div class="sv">7</div><div class="sl">Mediana</div></div>
+  <div class="sc"><div class="sv">5,9</div><div class="sl">Media</div></div>
+  <div class="sc"><div class="sv">88</div><div class="sl">Activaciones totales</div></div>
+  <div class="sc re"><div class="sv">15,9%</div><div class="sl">Tasa utilización (88/555)</div></div>
+</div>
+<div class="cw"><div class="ct">IIM de los 15 expedientes</div><canvas id="c_iim" height="320"></canvas></div>
+<h3>Activación por grupo de medidas</h3>
+<div class="cw"><div class="ct">Activaciones por grupo</div><div class="cs">El Grupo A concentra el 40% de las activaciones totales</div><canvas id="c_groups" height="270"></canvas></div>
+
+<h3>Lo que siempre se activa y lo que nunca se activa</h3>
+<div class="sem">
+  <div class="sem-c g"><h4>▲ Más activadas</h4>
+    <div class="si"><span>Uso no sexista del lenguaje</span><span class="sb">11/15</span></div>
+    <div class="si"><span>Igualdad como principio</span><span class="sb">10/15</span></div>
+    <div class="si"><span>Mejora del conocimiento diferencial</span><span class="sb">6/15</span></div>
+    <div class="si"><span>Acciones dirigidas a mujeres</span><span class="sb">6/15</span></div>
+    <div class="si"><span>Seguimiento y evaluación</span><span class="sb">5/15</span></div>
+    <div class="si"><span>Formación y sensibilización</span><span class="sb">5/15</span></div>
+  </div>
+  <div class="sem-c r"><h4>▼ Nunca activadas</h4>
+    <div class="si"><span>Paridad en tribunales</span><span class="sb">0/15</span></div>
+    <div class="si"><span>Paridad en jurados</span><span class="sb">0/15</span></div>
+    <div class="si"><span>Interseccionalidad discapacidad</span><span class="sb">0/15</span></div>
+    <div class="si"><span>Interseccionalidad residencia rural</span><span class="sb">0/15</span></div>
+    <div class="si"><span>Otros ejes interseccionalidad</span><span class="sb">0/15</span></div>
+    <div class="si"><span>Prohibición de discriminación</span><span class="sb">0/15</span></div>
+    <div class="si"><span>Otras medidas prohibitivas</span><span class="sb">0/15</span></div>
+  </div>
+</div>
+<div class="hb purple"><strong>Estructura en cascada:</strong> mucha activación en la capa retórica (lenguaje, principios), que decrece cuando las medidas exigen cambios en el diseño material de la disposición. Se integra la igualdad como principio pero no se traduce en compromisos concretos y vinculantes.</div>
+</section>
+
+<!-- RELACIÓN DIAGNÓSTICO-MEDIDAS -->
+<section id="s_rel">
+<h2>La relación entre diagnóstico y medidas</h2>
+<p>La relación entre ICD e IIM es <strong>débil</strong>. No hay correspondencia consistente entre la calidad del diagnóstico y la intensidad de las medidas.</p>
+<div class="cw"><div class="ct">Distribución conjunta ICD–IIM</div><div class="cs">Cuatro perfiles según medianas (ICD=22, IIM=7)</div><canvas id="c_scatter" height="370"></canvas></div>
+<div class="sr">
+  <div class="sc gr"><div class="sv">5</div><div class="sl">Perfil A · Sólido + activas</div></div>
+  <div class="sc or"><div class="sv">3</div><div class="sl">Perfil B · Sólido + pocas</div></div>
+  <div class="sc pu"><div class="sv">3</div><div class="sl">Perfil C · Débil + activas</div></div>
+  <div class="sc re"><div class="sv">4</div><div class="sl">Perfil D · Débil + pocas</div></div>
+</div>
+<p>Solo un tercio completa el circuito diagnóstico-medidas. La ruptura no es de voluntad sino de diseño del procedimiento.</p>
+<h3>Un problema de secuencia en el formulario</h3>
+<div class="fl">
+  <div class="fl-row"><div class="fl-label">Actual</div><div class="fb sand">Diagnóstico</div><div class="fl-arrow">→</div><div class="fb sand">Previsión</div><div class="fl-arrow" style="color:var(--red)">⇢</div><div class="fb sand">Medidas</div></div>
+  <div class="fl-note" style="color:var(--red)">↑ La previsión se formula sin saber qué medidas habrá</div>
+  <div class="fl-row" style="margin-top:1rem"><div class="fl-label">Propuesta</div><div class="fb pu">Diagnóstico</div><div class="fl-arrow">→</div><div class="fb pu">Medidas</div><div class="fl-arrow">→</div><div class="fb pu">Previsión</div></div>
+  <div class="fl-note" style="color:var(--purple)">↑ × 5 dimensiones · Cada dimensión cierra su propio circuito</div>
+</div>
+</section>
+
+<!-- VERIFICACIÓN -->
+<section id="s_verif">
+<h2>El papel de la verificación</h2>
+<p>Las Directrices <strong>no definen</strong> qué debe contener el IV, cuál es su alcance ni qué ocurre cuando la EPIG es insuficiente.</p>
+<div class="sr">
+  <div class="sc re"><div class="sv">4/15</div><div class="sl">Expedientes donde el IV recoge mejoras</div></div>
+  <div class="sc re"><div class="sv">23,3%</div><div class="sl">Aspectos mejorables recogidos</div></div>
+  <div class="sc pu"><div class="sv">10/17</div><div class="sl">Mejoras en un solo expediente</div></div>
+</div>
+<p>Esto no es un juicio sobre la Dirección de Igualdad: opera sin mandato explícito, sin estándares definidos y sin consecuencias previstas. El sistema no está diseñado para que la verificación funcione como mecanismo de mejora.</p>
+<h3>Cuatro opciones para la verificación</h3>
+<div class="esc">
+  <div class="es"><div class="es-n">1</div><div class="es-b"><h4>Comprobación formal</h4><p>Se comprueba que la EPIG está cumplimentada. No se evalúa la calidad. No genera aprendizaje.</p></div></div>
+  <div class="es rec"><div class="es-n">2</div><div class="es-b"><h4>Análisis propio con función pedagógica</h4><p>Análisis propio, fortalezas, carencias, recomendaciones. El departamento debe motivar si no las acepta.</p></div></div>
+  <div class="es"><div class="es-n">3</div><div class="es-b"><h4>Análisis propio con capacidad de paralizar</h4><p>Puede detener la tramitación cuando la EPIG no alcanza los estándares. Máxima garantía, máxima exigencia.</p></div></div>
+  <div class="es"><div class="es-n">4</div><div class="es-b"><h4>Modelo híbrido</h4><p>Función pedagógica general + mecanismo de mínimos para vacíos absolutos.</p></div></div>
+</div>
+<div class="hb fuchsia">La clave: que las Directrices definan <strong>qué se espera de la EPIG, qué función tiene el IV, y qué ocurre cuando la EPIG es insuficiente</strong>.</div>
+</section>
+
+<!-- EXENCIONES -->
+<section id="s_exen">
+<h2>El sistema de exenciones: los expedientes de Anexo 2</h2>
+<p><strong>8 de 27 expedientes</strong> (casi un tercio) tramitados como exención. Todos validados. Tres lógicas de exención, todas canalizadas por el mismo formulario.</p>
+<div class="cw"><div class="ct">Expedientes exentos</div>
+<table class="et"><thead><tr><th>Exp.</th><th>Denominación</th><th>Área</th><th>Lógica</th></tr></thead><tbody>
+<tr><td>15</td><td>Plan Acción del Ruido</td><td>Movilidad</td><td><span class="lb l1">Neutralidad técnica</span></td></tr>
+<tr><td>16</td><td>Plan Zonal Protección Acústica</td><td>Movilidad</td><td><span class="lb l1">Neutralidad técnica</span></td></tr>
+<tr><td>19</td><td>Modif. Plan Especial Atxuri</td><td>Plan. Urbana</td><td><span class="lb l2">Remisión a previos</span></td></tr>
+<tr><td>21</td><td>Plan Especial Zamakola</td><td>Plan. Urbana</td><td><span class="lb l2">Remisión a previos</span></td></tr>
+<tr><td>18</td><td>Plan Estratégico Subvenciones</td><td>Euskera/Partic.</td><td><span class="lb l2">Remisión a previos</span></td></tr>
+<tr><td>13</td><td>Ord. Fiscal Tasa Residuos</td><td>Hacienda</td><td><span class="lb l1">Neutralidad</span> <span class="lb l3">Modificación</span></td></tr>
+<tr><td>11</td><td>Reglamento Cementerios</td><td>Salud</td><td><span class="lb l3">Modificación</span></td></tr>
+<tr><td>12</td><td>Ord. Prestación Patrimonial</td><td>Salud</td><td><span class="lb l3">Modificación</span></td></tr>
+</tbody></table></div>
+
+<h3>Quién decide la exención</h3>
+<div class="fl">
+  <div class="fl-row"><div class="fl-label">Actual</div><div class="fb re">Promotor decide no hay relevancia</div><div class="fl-arrow">→</div><div class="fb sand">Anexo 2</div><div class="fl-arrow">→</div><div class="fb sand">Igualdad valida</div></div>
+  <div class="fl-note" style="color:var(--red);text-align:right">100% validadas ●</div>
+  <div class="fl-row" style="margin-top:1rem"><div class="fl-label">Propuesta</div><div class="fb sand">Promotor solicita</div><div class="fl-arrow">→</div><div class="fb pu">Igualdad analiza y decide</div><div class="fl-arrow">→</div><div class="fb gr" style="font-size:.75rem">Sí→A2 / No→A1</div></div>
+  <div class="fl-note" style="color:var(--purple)">La decisión pasa al órgano especializado</div>
+</div>
+</section>
+
+<!-- ÁREAS -->
+<section id="s_areas">
+<h2>Análisis por áreas municipales</h2>
+<div class="ac-grid">
+  <div class="ac"><div class="an">Cultura y Gobernanza</div><div class="am"><span class="at t1">2 Anexo I</span>ICD 27/27 · IIM 8/8</div><p>El referente: diagnóstico riguroso con traducción coherente en medidas.</p></div>
+  <div class="ac"><div class="an">Derechos Humanos y Cooperación</div><div class="am"><span class="at t1">1 Anexo I</span>ICD 29 · IIM 14</div><p>El expediente más completo. Activa medidas en 5 de 7 grupos.</p></div>
+  <div class="ac"><div class="an">Acción Social</div><div class="am"><span class="at t1">2 Anexo I</span>ICD 29/10 · IIM 9/7</div><p>Un expediente excelente y otro con carencias severas.</p></div>
+  <div class="ac"><div class="an">Euskera, Participación, Agenda 2030</div><div class="am"><span class="at t1">4 A.I</span><span class="at t2">1 A.2</span>ICD 10–22 · IIM 1–11</div><p>Mayor volumen y mayor dispersión. Donde más intervino el IV.</p></div>
+  <div class="ac"><div class="an">Movilidad y Sostenibilidad</div><div class="am"><span class="at t1">3 A.I</span><span class="at t2">2 A.2</span>ICD 21–25 · IIM 0–5</div><p>Perfil B: buen diagnóstico, escasas medidas. Las exenciones más cuestionables.</p></div>
+  <div class="ac"><div class="an">Salud y Consumo</div><div class="am"><span class="at t1">2 A.I</span><span class="at t2">2 A.2</span>ICD 8/24 · IIM 4/8</div><p>Área partida. Las exenciones ilustran la refundición sin evaluación previa.</p></div>
+  <div class="ac"><div class="an">Planificación Urbana</div><div class="am"><span class="at t1">1 A.I</span><span class="at t2">2 A.2</span><span class="at t59">4 Art.59.2B</span>ICD 12 · IIM 0</div><p><strong>La gran ausente.</strong> El área que más contenido con relevancia de género produce fuera del sistema.</p></div>
+  <div class="ac"><div class="an">Hacienda</div><div class="am"><span class="at t2">1 Anexo 2</span>Sin evaluaciones completas</div><p>Ninguna evaluación completa en un área que regula cargas tributarias.</p></div>
+</div>
+<div class="hb purple"><strong>Cuatro hallazgos:</strong> 1) Las áreas con trayectoria sectorial producen mejores evaluaciones. 2) La dispersión dentro de una misma área es tan significativa como la diferencia entre áreas. 3) Las áreas con mayor impacto territorial y económico son las que menos evalúan. 4) La calidad está condicionada por la formación y los materiales de referencia.</div>
+</section>
+
+
+<!-- ═════════════ CONCLUSIONES ═════════════ -->
+<div class="divider" id="conc">
+  <h2>Conclusiones y propuestas de mejora</h2>
+  <p>De los hallazgos a las decisiones: qué preservar, qué redefinir y qué construir</p>
+</div>
+
+<!-- 5.1 -->
+<section>
+<h2>Valoración global: una base sólida sobre la que construir</h2>
+<p>El Ayuntamiento de Bilbao presenta un <strong>nivel de desarrollo institucional alto</strong> en evaluación de impacto de género: Directrices propias, formulario en cinco dimensiones, catálogo de 37 medidas, circuito de verificación. La mediana del ICD se sitúa en 22/30 y un tercio de los expedientes supera el 25. Los mejores expedientes demuestran lo que el sistema es capaz de producir. El encargo de este diagnóstico es, en sí mismo, un indicador de madurez institucional.</p>
+<p>El conjunto del informe se ha enfocado a detectar carencias y formular propuestas, sin detenerse proporcionalmente en las fortalezas. Esto no significa que no existan: significa que el objetivo del trabajo era otro. Las propuestas que siguen deben leerse como un <strong>mapa de oportunidades</strong> para un sistema que funciona razonablemente bien y que tiene ante sí el horizonte de funcionar mejor.</p>
+</section>
+
+<!-- 5.2 -->
+<section>
+<h2>Sobre la simplificación y la personalización de los formularios</h2>
+<p>El formulario del Anexo I ya es <strong>todo lo simple que puede ser sin perder capacidad analítica</strong>. Las cinco dimensiones son las categorías consolidadas del análisis de género, coherentes con los instrumentos de Emakunde y del Gobierno Vasco. Reducir el catálogo de 37 medidas haría que opciones dejaran de estar disponibles. Personalizar los formularios por sector presenta un problema de viabilidad: la diversidad de actuaciones posibles es demasiado amplia para anticiparla con formularios sectoriales.</p>
+<p>La estrategia no es simplificar ni personalizar, sino <strong>reorganizar para guiar el razonamiento</strong>, acompañar, difundir materiales y verificar con sentido pedagógico. Esto requiere un compromiso institucional para ampliar los recursos de la Dirección de Igualdad, complementado en su caso con asesoría externa especializada.</p>
+</section>
+
+<!-- 5.3 -->
+<section>
+<h2>Lo que las Directrices actuales hacen bien</h2>
+<p>Las <strong>cinco dimensiones analíticas</strong> son las correctas. El <strong>catálogo de 37 medidas</strong> es completo y comparable. La previsión de un <strong>circuito de verificación</strong> es una fortaleza. La distinción <strong>Anexo I / Anexo 2</strong> es razonable en su principio. El <strong>ámbito de aplicación amplio</strong> (toda disposición de carácter general) debe preservarse. La práctica del <strong>art. 59.2B del PGOU</strong> es una innovación valiosa que merece formalización.</p>
+</section>
+
+<!-- 5.4 -->
+<section>
+<h2>Lo que las Directrices no definen con claridad</h2>
+<p>Las principales carencias no están en lo que regulan sino en lo que <strong>dejan sin definir con precisión</strong>: la naturaleza y el momento procedimental de la EPIG quedan confusos. No se define qué función tiene el IV. No se define qué ocurre cuando la EPIG es insuficiente. No se define quién tiene la última palabra sobre las exenciones. No se prevé itinerario para el art. 59.2B. No son vacíos absolutos, sino insuficiente precisión que genera una aplicación desigual y un sistema que funciona de forma diferente según quién elabore la evaluación y quién la verifique.</p>
+</section>
+
+<!-- 5.5 PROPUESTAS -->
+<section id="s_prop">
+<h2>Propuestas de mejora</h2>
+<p>Siete propuestas articuladas sobre una lógica común: no simplificar, sino reorganizar, acompañar, difundir y verificar con sentido pedagógico.</p>
+
+<details>
+<summary>Reorganización del formulario del Anexo I</summary>
+<div class="dc">
+<div class="dl prob">Problema documentado</div>
+<p>Desconexión estructural entre diagnóstico y medidas. La secuencia actual (diagnóstico → previsión → medidas) pide formular la previsión <em>antes</em> de definir las medidas. Solo un tercio de los expedientes completa el circuito.</p>
+<div class="dl prop">Propuesta</div>
+<p>Reorganizar cada dimensión como bloque cerrado: <strong>diagnóstico → medidas → previsión</strong>. Las 37 medidas se mantendrían íntegras pero redistribuidas dentro de las cinco dimensiones, distinguiendo medidas transversales, dimensionales y de cumplimiento normativo general. Cinco bloques sin bloque separado de medidas.</p>
+</div>
+</details>
+
+<details>
+<summary>Digitalización del formulario</summary>
+<div class="dc">
+<div class="dl prob">Problema documentado</div>
+<p>El PDF no guía el razonamiento ni genera datos para análisis agregado.</p>
+<div class="dl prop">Propuesta</div>
+<p>Formulario electrónico con <strong>condicionalidad</strong>: si se activa una medida, el formulario pide indicar dónde se recoge en la disposición. Genera una base de datos acumulativa para análisis periódico.</p>
+</div>
+</details>
+
+<details>
+<summary>Función del Informe de Verificación</summary>
+<div class="dc">
+<div class="dl prob">Problema documentado</div>
+<p>Solo el 23% de los aspectos mejorables fueron recogidos. 10 de las 17 mejoras recogidas se concentran en un solo expediente. Recursos humanos limitados y sin mandato explícito.</p>
+<div class="dl prop">Opciones</div>
+<ul>
+  <li><strong>Opción 1 — Comprobación formal.</strong> Viable con recursos actuales + formulario digital. No genera aprendizaje.</li>
+  <li><strong>Opción 2 — Análisis propio con función pedagógica.</strong> La más transformadora. Requiere ampliar recursos.</li>
+  <li><strong>Opción 3 — Con capacidad de paralizar.</strong> Máxima garantía. Máxima exigencia.</li>
+  <li><strong>Opción 4 — Modelo híbrido.</strong> Pedagógica + mecanismo de mínimos para vacíos absolutos.</li>
+</ul>
+<div class="dl rec">Recomendación</div>
+<p>Si los recursos se amplían: <strong>Opción 2</strong>. Si se mantienen: <strong>Opción 1 + digitalización</strong>. En cualquier caso, incorporar elementos de la Opción 3 para exenciones y EPIG con vacíos.</p>
+</div>
+</details>
+
+<details>
+<summary>Momento procedimental: cuándo se elabora y cuándo se verifica</summary>
+<div class="dc">
+<div class="dl prob">Problema documentado</div>
+<p>Confusión sobre qué se remite a la Dirección de Igualdad: ¿diagnóstico provisional o resultado final? El caso BilbaoBizi muestra que propuestas pueden no llegar a los textos aprobados.</p>
+<div class="dl prop">Propuesta</div>
+<p>El documento remitido debe corresponder al momento en que el departamento <strong>ya ha consensuado internamente qué contenidos van y cuáles no</strong>. Un solo momento de verificación, bien definido. Se descarta el procedimiento en dos fases por complejidad.</p>
+</div>
+</details>
+
+<details>
+<summary>Reforma del sistema de exenciones</summary>
+<div class="dc">
+<div class="dl prob">Problema documentado</div>
+<p>8 de 27 expedientes exentos. Tres lógicas canalizadas por el mismo formulario. Causas amplias. Decisión unilateral del promotor. 100% validadas.</p>
+<div class="dl prop">Primera línea: mecanismo de validación</div>
+<p>La Dirección de Igualdad <strong>valida la exención o requiere evaluación completa</strong>. La decisión de excluir no debe recaer en el órgano que carece de perspectiva especializada.</p>
+<div class="dl prop">Segunda línea: precisión de las causas</div>
+<ul>
+  <li><strong>Refundición:</strong> condicionada a que las normas de origen tengan EPIG previa.</li>
+  <li><strong>Carácter organizativo:</strong> excluir normas con prestaciones económicas a la ciudadanía.</li>
+  <li><strong>Modificación no sustancial:</strong> restringir a modificaciones genuinamente mecánicas.</li>
+  <li><strong>Instrumentos urbanísticos:</strong> los que transformen tipología edificatoria o espacios públicos deben evaluarse.</li>
+  <li><strong>Remisión a previos:</strong> toda aportación sustantiva debe evaluarse, aunque simplificadamente.</li>
+  <li><strong>Impacto positivo:</strong> si se alega impacto positivo, hay impacto de género — debe evaluarse.</li>
+</ul>
+</div>
+</details>
+
+<details>
+<summary>Itinerario para actuaciones del artículo 59.2B del PGOU</summary>
+<div class="dc">
+<div class="dl prob">Problema documentado</div>
+<p>Cuatro expedientes tramitados sin formato estandarizado. Actuaciones <em>sui generis</em> fuera de las Directrices.</p>
+<div class="dl prop">Propuesta</div>
+<p>Anexo específico con tres dimensiones simplificadas (la normativa ya preestablecida): <strong>Presencia</strong> (datos desagregados de residentes y transeúntas), <strong>Participación</strong> (percepción diferenciada de las mujeres sobre la seguridad), <strong>Acceso a recursos</strong> (impacto sobre accesibilidad aplicando criterios de diseño urbano). Medidas como condiciones de diseño en la licencia de obras.</p>
+</div>
+</details>
+
+<details>
+<summary>Formación, materiales, acompañamiento y corpus pedagógico</summary>
+<div class="dc">
+<div class="dl prob">Problema documentado</div>
+<p>La calidad de la EPIG está condicionada por formación y materiales de referencia. Un formulario mejor diseñado guía el razonamiento, pero no puede sustituir el conocimiento.</p>
+<div class="dl prop">Propuesta: inversión en cuatro ámbitos</div>
+<ul>
+  <li><strong>Formación:</strong> orientada a la aplicación práctica sectorial, no a la teoría general.</li>
+  <li><strong>Materiales:</strong> acercar los mapas sectoriales de Emakunde al Ayuntamiento.</li>
+  <li><strong>Acompañamiento:</strong> orientación experta durante la elaboración + informe de verificación con función pedagógica.</li>
+  <li><strong>Corpus pedagógico:</strong> los informes de verificación van ampliando la biblioteca de referencia acumulativa.</li>
+</ul>
+<p>La Dirección de Igualdad no puede asumirlo con recursos actuales. Requiere <strong>ampliar el equipo</strong> y/o contratar <strong>asesoría externa especializada</strong>.</p>
+</div>
+</details>
+</section>
+
+<!-- 5.6 MAPA DE DECISIONES -->
+<section>
+<h2>Síntesis: el mapa de decisiones para las nuevas Directrices</h2>
+<p>Las propuestas configuran un conjunto de decisiones. Algunas son técnicas e inmediatas; otras implican definir el nivel de ambición institucional.</p>
+<div class="dm-grid">
+  <div class="dm d1"><div class="dm-t">Decisión técnica · Inmediata</div><h4>Diseño del instrumento</h4><p>Reorganización del formulario por dimensión. Redistribución de medidas. Digitalización.</p></div>
+  <div class="dm d2"><div class="dm-t">Decisión de recursos · Estratégica</div><h4>Función de la verificación</h4><p>Opción 1 viable con recursos actuales. Opción 2 exige ampliar recursos. Decisión sobre el grado de compromiso.</p></div>
+  <div class="dm d3"><div class="dm-t">Decisión preventiva · Mayor impacto</div><h4>Sistema de exenciones</h4><p>Mecanismo de validación + precisión de causas. Una sola decisión correcta evita que un expediente quede fuera.</p></div>
+  <div class="dm d4"><div class="dm-t">Decisión habilitante · Transversal</div><h4>Formación y acompañamiento</h4><p>Condiciona que las restantes propuestas produzcan efectos reales.</p></div>
+</div>
+<div class="hb purple" style="margin-top:1.5rem">
+  Lo imprescindible: que las nuevas Directrices definan con claridad <strong>qué se espera de la EPIG, qué función tiene el Informe de Verificación, y qué ocurre cuando la evaluación es insuficiente</strong>.<br><br>
+  La igualdad entre mujeres y hombres no se construye con trámites formales sino con análisis rigurosos, decisiones informadas y la voluntad política de que las normas que regulan la vida de la ciudadanía <strong>dejen de ser ciegas al género</strong>.
+</div>
+</section>
+
+</main>
+
+<!-- SCRIPTS -->
+<script>
+const C={pu:'#7B2D8E',pd:'#4A1070',fu:'#C2185B',re:'#E53935',or:'#FF6F00',am:'#FFB300',gr:'#43a047',bg:'#faf8fc',bd:'#e8ddf0',tx:'#2d1b4e',tl:'#6b5b7b'};
+Chart.defaults.font.family="'Montserrat',sans-serif";Chart.defaults.font.size=12;Chart.defaults.color=C.tx;
+
+// Donut
+new Chart(document.getElementById('c_donut'),{type:'doughnut',data:{labels:['Anexo I (15)','Anexo 2 (8)','Art. 59.2B (4)'],datasets:[{data:[15,8,4],backgroundColor:[C.gr,C.fu,C.or],borderWidth:3,borderColor:'#fff'}]},options:{cutout:'55%',plugins:{legend:{position:'bottom',labels:{padding:14,usePointStyle:true,pointStyle:'circle'}}}}});
+
+// ICD
+const icd=[{e:'01 Sinhogarismo',v:29},{e:'04 Cooperación',v:29},{e:'10 Consejo Cultura',v:27},{e:'25 Plan Cultura',v:27},{e:'14A Regl. BilbaoBizi',v:25},{e:'02 Adicciones',v:24},{e:'22 Consejo Cívico',v:22},{e:'14B Ord. BilbaoBizi',v:22},{e:'26 Acuerdo Climático',v:21},{e:'03 Plan Euskera',v:18},{e:'05 Acción Internacional',v:16},{e:'24 Ord. Terrazas',v:12},{e:'06 Plan Infancia',v:10},{e:'09 Agenda 2030',v:10},{e:'23 Ord. Animales',v:8}];
+new Chart(document.getElementById('c_icd'),{type:'bar',data:{labels:icd.map(d=>d.e),datasets:[{data:icd.map(d=>d.v),backgroundColor:icd.map(d=>d.v>=25?C.gr:d.v>=13?C.or:C.re),borderRadius:4,barThickness:18}]},options:{indexAxis:'y',scales:{x:{max:30,grid:{color:'rgba(0,0,0,.05)'}},y:{grid:{display:false}}},plugins:{legend:{display:false}}}});
+
+// Dimensions
+const dL=['D1 Presencia—Sit.','D1 Presencia—Prev.','D2 Participación—Sit.','D2 Participación—Prev.','D3 Recursos—Sit.','D3 Recursos—Prev.','D4 Normas—Sit.','D4 Normas—Prev.','D5 Normativa—Sit.','D5 Normativa—Prev.'];
+new Chart(document.getElementById('c_dim'),{type:'bar',data:{labels:dL,datasets:[{label:'Adecuado',data:[8,7,2,7,2,4,4,6,9,8],backgroundColor:C.gr,borderRadius:3},{label:'Mejorable',data:[7,8,8,5,11,9,9,8,4,4],backgroundColor:C.or,borderRadius:3},{label:'Omisión',data:[0,0,5,3,2,2,2,1,2,3],backgroundColor:C.re,borderRadius:3}]},options:{indexAxis:'y',scales:{x:{stacked:true,max:15,grid:{color:'rgba(0,0,0,.05)'}},y:{stacked:true,grid:{display:false}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:14}}}}});
+
+// Sit vs Prev
+new Chart(document.getElementById('c_sit'),{type:'doughnut',data:{labels:['Adecuado 33,3%','Mejorable 52,0%','Omisión 14,7%'],datasets:[{data:[33.3,52,14.7],backgroundColor:[C.gr,C.or,C.re],borderWidth:2,borderColor:'#fff'}]},options:{cutout:'50%',plugins:{legend:{position:'bottom',labels:{padding:8,font:{size:10},usePointStyle:true,pointStyle:'circle'}}}}});
+new Chart(document.getElementById('c_prev'),{type:'doughnut',data:{labels:['Adecuado 42,7%','Mejorable 45,3%','Omisión 12,0%'],datasets:[{data:[42.7,45.3,12],backgroundColor:[C.gr,C.or,C.re],borderWidth:2,borderColor:'#fff'}]},options:{cutout:'50%',plugins:{legend:{position:'bottom',labels:{padding:8,font:{size:10},usePointStyle:true,pointStyle:'circle'}}}}});
+
+// Progress bars
+const ivD=[{d:'D1 Presencia — Situación',m:7,r:1},{d:'D1 Presencia — Previsión',m:8,r:2},{d:'D2 Participación — Situación',m:8,r:2},{d:'D2 Participación — Previsión',m:5,r:2},{d:'D3 Recursos — Situación',m:11,r:1},{d:'D3 Recursos — Previsión',m:9,r:2},{d:'D4 Normas — Situación',m:9,r:2},{d:'D4 Normas — Previsión',m:8,r:2},{d:'D5 Normativa — Situación',m:4,r:2},{d:'D5 Normativa — Previsión',m:4,r:1}];
+const pb=document.getElementById('pb42');ivD.forEach(d=>{const p=Math.round(d.r/d.m*100);const c=p<20?C.re:p<35?C.or:C.gr;pb.innerHTML+=`<tr><td>${d.d}</td><td style="text-align:center">${d.m}</td><td style="text-align:center">${d.r}</td><td style="width:35%"><div class="pb"><div class="f" style="width:${p}%;background:${c}"></div><span class="pct">${p}%</span></div></td></tr>`});
+
+// IIM
+const iim=[{e:'04 Cooperación',v:14},{e:'03 Plan Euskera',v:11},{e:'01 Sinhogarismo',v:9},{e:'10 Consejo Cultura',v:8},{e:'25 Plan Cultura',v:8},{e:'09 Agenda 2030',v:8},{e:'02 Adicciones',v:8},{e:'06 Plan Infancia',v:7},{e:'26 Acuerdo Climático',v:5},{e:'22 Consejo Cívico',v:4},{e:'23 Ord. Animales',v:4},{e:'05 Acción Internacional',v:1},{e:'14A Regl. BilbaoBizi',v:1},{e:'14B Ord. BilbaoBizi',v:0},{e:'24 Ord. Terrazas',v:0}];
+new Chart(document.getElementById('c_iim'),{type:'bar',data:{labels:iim.map(d=>d.e),datasets:[{data:iim.map(d=>d.v),backgroundColor:iim.map(d=>d.v>=7?C.gr:d.v>=3?C.or:C.re),borderRadius:4,barThickness:18}]},options:{indexAxis:'y',scales:{x:{max:37,grid:{color:'rgba(0,0,0,.05)'}},y:{grid:{display:false}}},plugins:{legend:{display:false}}}});
+
+// Groups
+new Chart(document.getElementById('c_groups'),{type:'bar',data:{labels:['A Perspectiva\ngénero','B Participación\nequilibrada','C Acción\npositiva','D Impacto\nneutro+','E Intersec-\ncionalidad','F Prohibi-\ntivas','G Complemen-\ntarias'],datasets:[{label:'Activaciones',data:[35,7,9,8,9,1,19],backgroundColor:C.pu,borderRadius:4},{label:'Expedientes ≥1',data:[13,4,7,5,5,1,6],backgroundColor:C.fu,borderRadius:4}]},options:{scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.05)'}},x:{grid:{display:false}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:14}}}}});
+
+// Scatter
+const sd=[{x:29,y:9},{x:29,y:14},{x:27,y:8},{x:27,y:8},{x:25,y:1},{x:24,y:8},{x:22,y:4},{x:22,y:0},{x:21,y:5},{x:18,y:11},{x:16,y:1},{x:12,y:0},{x:10,y:7},{x:10,y:8},{x:8,y:4}];
+function gp(x,y){return x>=22?(y>=7?'A':'B'):(y>=7?'C':'D')}
+const pc={A:C.gr,B:C.or,C:C.pu,D:C.re};
+new Chart(document.getElementById('c_scatter'),{type:'scatter',data:{datasets:['A','B','C','D'].map(p=>({label:'Perfil '+p,data:sd.filter(d=>gp(d.x,d.y)===p).map(d=>({x:d.x,y:d.y})),backgroundColor:pc[p],borderColor:pc[p],pointRadius:7,pointHoverRadius:10}))},options:{scales:{x:{title:{display:true,text:'ICD',font:{weight:'bold'}},min:0,max:32,grid:{color:'rgba(0,0,0,.05)'}},y:{title:{display:true,text:'IIM',font:{weight:'bold'}},min:-1,max:16,grid:{color:'rgba(0,0,0,.05)'}}},plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:14}},annotation:{annotations:{lx:{type:'line',xMin:22,xMax:22,borderColor:'rgba(0,0,0,.12)',borderWidth:1.5,borderDash:[6,4]},ly:{type:'line',yMin:7,yMax:7,borderColor:'rgba(0,0,0,.12)',borderWidth:1.5,borderDash:[6,4]}}}}}});
+
+// Nav active
+const obs=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){document.querySelectorAll('nav a').forEach(l=>l.classList.remove('active'));const a=document.querySelector(`nav a[href="#${en.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('section[id],.divider[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>
