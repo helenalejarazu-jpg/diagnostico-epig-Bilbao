@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prototipo — Formulario EPIG reorganizado por dimensión</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f5f3ee;color:#2c2c2a;line-height:1.6;padding:20px}
+.container{max-width:900px;margin:0 auto}
+h1{font-size:1.4em;font-weight:600;color:#4A2882;margin-bottom:8px}
+.subtitle{font-size:0.9em;color:#888;margin-bottom:30px;font-style:italic}
+.id-block{background:white;border-radius:12px;padding:24px;margin-bottom:24px;border:1px solid #e0ddd6}
+.id-block h2{font-size:1.1em;color:#4A2882;margin-bottom:16px}
+.id-field{display:flex;gap:12px;margin-bottom:12px;align-items:center}
+.id-field label{flex:0 0 200px;font-weight:500;font-size:0.9em;color:#555}
+.id-field input,.id-field select{flex:1;padding:8px 12px;border:1px solid #d0cdc6;border-radius:6px;font-size:0.9em}
+.dimension{background:white;border-radius:12px;margin-bottom:16px;border:1px solid #e0ddd6;overflow:hidden}
+.dim-header{padding:16px 24px;cursor:pointer;display:flex;align-items:center;gap:12px;user-select:none;transition:background 0.2s}
+.dim-header:hover{background:#f9f8f5}
+.dim-number{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.95em;color:white;flex-shrink:0}
+.dim-header h2{font-size:1.05em;font-weight:600;flex:1}
+.dim-header .arrow{font-size:1.2em;color:#999;transition:transform 0.3s}
+.dim-header.open .arrow{transform:rotate(90deg)}
+.dim-body{display:none;padding:0 24px 24px}
+.dim-body.open{display:block}
+.phase{margin-top:20px;margin-bottom:12px;padding:8px 14px;border-radius:6px;font-size:0.85em;font-weight:600;letter-spacing:0.03em;display:inline-block}
+.phase-diag{background:#EEEDFE;color:#4A2882}
+.phase-med{background:#E1F5EE;color:#085041}
+.phase-prev{background:#FAECE7;color:#712B13}
+.instruction{font-size:0.88em;color:#666;margin-bottom:12px;padding:10px 14px;background:#faf9f6;border-left:3px solid #d0cdc6;border-radius:0 6px 6px 0}
+textarea{width:100%;padding:10px 14px;border:1px solid #d0cdc6;border-radius:8px;font-family:inherit;font-size:0.9em;resize:vertical;min-height:80px;transition:border-color 0.2s}
+textarea:focus{outline:none;border-color:#4A2882}
+.measure-item{padding:10px 14px;margin:6px 0;border-radius:8px;border:1px solid #e8e6df;background:#fdfcfa}
+.measure-header{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.measure-header input[type="checkbox"]{margin-top:5px;width:16px;height:16px;accent-color:#4A2882;flex-shrink:0}
+.measure-title{font-size:0.92em;font-weight:500;color:#2c2c2a}
+.measure-desc{font-size:0.84em;color:#888;margin-top:2px;margin-left:26px}
+.measure-detail{margin-top:10px;margin-left:26px;display:none}
+.measure-detail.open{display:block}
+.measure-detail-label{font-size:0.82em;color:#888;margin-bottom:4px}
+.measure-detail textarea{min-height:60px}
+.d1 .dim-number{background:#534AB7}
+.d2 .dim-number{background:#185FA5}
+.d3 .dim-number{background:#0F6E56}
+.d4 .dim-number{background:#D85A30}
+.d5 .dim-number{background:#993556}
+.flow-indicator{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.flow-step{padding:4px 12px;border-radius:20px;font-size:0.78em;font-weight:500}
+.flow-arrow{color:#ccc;font-size:0.8em}
+.summary{background:white;border-radius:12px;padding:24px;margin-top:24px;border:1px solid #4A2882}
+.summary h2{font-size:1.1em;color:#4A2882;margin-bottom:16px}
+.summary-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0efe8;font-size:0.9em}
+.summary-row:last-child{border-bottom:none}
+.summary-label{color:#666}
+.summary-value{font-weight:600}
+.note-box{margin-top:16px;padding:12px;background:#EEEDFE;border-radius:8px;font-size:0.85em;color:#4A2882}
+@media(max-width:600px){.id-field{flex-direction:column}.id-field label{flex:none}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Evaluación Previa de Impacto de Género — Anexo I reformado</h1>
+<p class="subtitle">Prototipo interactivo del formulario reorganizado por dimensión — Ayuntamiento de Bilbao</p>
+
+<div class="id-block">
+  <h2>Datos de identificación</h2>
+  <div class="id-field"><label>Denominación de la disposición:</label><input type="text" placeholder="Título completo del plan, ordenanza o reglamento"></div>
+  <div class="id-field"><label>Área promotora:</label><input type="text" placeholder="Área municipal responsable"></div>
+  <div class="id-field"><label>Tipo de disposición:</label><select><option value="">— Seleccionar —</option><option>Plan estratégico</option><option>Ordenanza</option><option>Reglamento</option><option>Estrategia o programa</option><option>Otro instrumento</option></select></div>
+  <div class="id-field"><label>Fecha de elaboración:</label><input type="date"></div>
+  <div class="id-field"><label>Persona responsable:</label><input type="text" placeholder="Nombre y cargo"></div>
+  <div class="id-field"><label>Objetivos generales:</label><input type="text" placeholder="Objetivos principales de la disposición"></div>
+  <div class="id-field"><label>Objetivos para la igualdad:</label><input type="text" placeholder="Objetivos específicos de igualdad, si los hay"></div>
+</div>
+
+<div id="dims"></div>
+
+<div class="summary">
+  <h2>Resumen del formulario</h2>
+  <div class="summary-row"><span class="summary-label">Tipos de medida activados:</span><span class="summary-value" id="s-act">0 de 20</span></div>
+  <div class="summary-row"><span class="summary-label">Con descripción concreta:</span><span class="summary-value" id="s-desc">0</span></div>
+  <div class="note-box">
+    <strong>Nota:</strong> Este es un prototipo interactivo. El formulario definitivo se implementaría en la herramienta digital que el Ayuntamiento determine. Al marcar un tipo de medida se despliega el campo para describir la acción concreta, el artículo de la disposición donde se recoge y el resultado esperado.
+  </div>
+</div>
+</div>
+
+<script>
+const D = [
+{id:"d1",n:"1",t:"Presencia de mujeres y hombres",c:"d1",
+ di:"Describa la composición por sexo de la población destinataria y del ámbito de actuación. Utilice datos desagregados por sexo de fuentes oficiales (Eustat, INE, registros municipales). Identifique las brechas de presencia: ¿dónde están las mujeres y dónde los hombres? ¿Hay infrarrepresentación? Atención a la discriminación múltiple e interseccionalidad.",
+ pi:"A la luz del diagnóstico y de las medidas seleccionadas, valore cómo la disposición contribuirá a reducir o ampliar las brechas de presencia detectadas.",
+ m:[
+  {t:"Producir conocimiento",d:"Cuando no hay datos suficientes: estadísticas desagregadas, estudios específicos, encuestas sobre composición por sexo en el ámbito de la disposición"},
+  {t:"Acción directa para corregir la brecha de presencia",d:"Acciones positivas, difusión dirigida, cuotas, accesibilidad, comunicación para promover la presencia de mujeres"},
+  {t:"Interseccionalidad",d:"Adaptar la respuesta a mujeres que sufren discriminación múltiple: por edad, renta, orientación sexual, discapacidad, etnia, origen nacional, ruralidad u otros ejes"}
+]},
+{id:"d2",n:"2",t:"Participación en el poder y la toma de decisiones",c:"d2",
+ di:"Analice la presencia de mujeres y hombres en los espacios de elaboración, decisión y gestión vinculados al documento. ¿Quién ha participado en la elaboración? ¿Composición por sexo de los órganos que la disposición crea o regula? ¿Representación equilibrada (mínimo 40/60)? ¿Han participado entidades que representan a las mujeres?",
+ pi:"Valore si la disposición creará o reforzará mecanismos de participación equilibrada, vinculando la previsión a las medidas seleccionadas.",
+ m:[
+  {t:"Composición equilibrada de órganos",d:"Paridad en tribunales de selección, jurados de premios, órganos consultivos y órganos de dirección que la disposición crea o regula"},
+  {t:"Participación en el proceso de elaboración",d:"Que mujeres y entidades que las representan hayan participado en la elaboración de la disposición y en los procesos participativos vinculados"},
+  {t:"Incorporar conocimiento especializado en igualdad",d:"Que participen personas con formación en igualdad de género y/o entidades especializadas en el proceso de elaboración o en los órganos de la disposición"}
+]},
+{id:"d3",n:"3",t:"Acceso y control de los recursos",c:"d3",
+ di:"Analice la distribución diferencial del acceso a tiempo, espacio, presupuesto, empleo, educación, vivienda, salud, transporte y tecnología entre mujeres y hombres en el ámbito de la disposición. ¿Quién tiene acceso a qué? ¿La economía del cuidado condiciona el acceso diferencial? ¿Cuáles son los factores clave en las diferencias?",
+ pi:"Valore si la disposición facilitará un acceso equitativo a los recursos que gestiona, vinculando la previsión a las medidas seleccionadas.",
+ m:[
+  {t:"Acción positiva en el acceso a recursos",d:"Bonificaciones, exenciones, priorización, criterios de acceso favorables para mujeres. Inclusión de la igualdad como criterio de valoración en procesos selectivos, subvenciones, convenios o actividades"},
+  {t:"Atender a colectivos con dimensión de género",d:"Medidas específicas de acceso a los recursos para mujeres víctimas de violencia machista, familias monomarentales, personas que asumen la carga del cuidado y otros colectivos cuya situación tiene una clara dimensión de género"},
+  {t:"Prohibir la discriminación en el acceso",d:"Cláusulas que prohíban la discriminación por razón de sexo en el acceso a los recursos, servicios o prestaciones que la disposición regula"},
+  {t:"Asignación presupuestaria para la igualdad",d:"Dedicar una parte del presupuesto o de los recursos económicos de la disposición a acciones específicas para la igualdad de mujeres y hombres"}
+]},
+{id:"d4",n:"4",t:"Normas sociales y valores",c:"d4",
+ di:"Identifique cómo influyen los estereotipos de género, la división sexual del trabajo y los patrones culturales en el ámbito de la disposición. ¿El sector reproduce roles tradicionales? ¿Existen sesgos de género en las prácticas, criterios de valoración o cultura organizativa? ¿Qué actitudes y comportamientos diferenciados operan en este ámbito?",
+ pi:"Valore si la disposición cuestionará o reproducirá las normas sociales desiguales identificadas, vinculando la previsión a las medidas seleccionadas.",
+ m:[
+  {t:"Incorporar la igualdad como principio",d:"Que la disposición declare la igualdad como principio rector o valor orientador, y que la igualdad se incluya como criterio en los procesos que la disposición regula"},
+  {t:"Perspectiva de género en los contenidos sectoriales",d:"Que el contenido propio de la disciplina cuestione estereotipos y roles de género. En cultura: que los contenidos culturales incorporen la perspectiva de género. En cooperación: que los proyectos incluyan la ruptura de roles entre sus objetivos. En urbanismo: que el diseño no reproduzca jerarquías de género (distribución de espacios, asignación de usos, señalización). En cada sector: que las prácticas profesionales se revisen desde la perspectiva de género"},
+  {t:"Conocimiento especializado para cuestionar sesgos",d:"Participación de personas expertas en igualdad que identifiquen y cuestionen los estereotipos y roles de género operantes en el ámbito sectorial de la disposición"},
+  {t:"Comunicación y sensibilización transformadora",d:"Acciones de difusión, sensibilización y formación dirigidas a transformar las normas sociales y los valores de género en el ámbito de la disposición"},
+  {t:"Prohibir la comunicación e imagen sexista",d:"Cláusulas que prohíban el uso sexista del lenguaje, la imagen y la comunicación en el ámbito de aplicación de la disposición"}
+]},
+{id:"d5",n:"5",t:"Normativa y garantías jurídicas",c:"d5",
+ di:"Identifique los mandatos de igualdad aplicables al ámbito concreto de la disposición: legislación estatal (LO 3/2007), autonómica (DL 1/2023 — cite los artículos específicos aplicables), foral (NF 4/2018) y municipal (Ordenanza de Igualdad). ¿La disposición garantiza el cumplimiento de estos mandatos? ¿Contempla la prevención de la violencia machista y la atención y protección a las víctimas?",
+ pi:"Valore si la disposición garantizará el cumplimiento de los mandatos normativos de igualdad identificados, vinculando la previsión a las medidas seleccionadas.",
+ m:[
+  {t:"Lenguaje no sexista",d:"Revisión íntegra del texto de la disposición para garantizar un uso no sexista del lenguaje"},
+  {t:"Seguimiento, evaluación y datos desagregados por sexo",d:"Mecanismos de seguimiento con indicadores de género, compromiso de producción estadística sistemáticamente desagregada por sexo, evaluación periódica del impacto de género de la disposición"},
+  {t:"Formación en igualdad",d:"Capacitación del personal implicado en la aplicación de la disposición en materia de igualdad de mujeres y hombres"},
+  {t:"Desarrollo normativo, planes y estructuras de igualdad",d:"Vinculación de la disposición con planes de igualdad existentes, desarrollo normativo complementario en materia de igualdad, creación o fortalecimiento de servicios, unidades o estructuras de igualdad"},
+  {t:"Paridad en órganos (garantía normativa)",d:"Cuando la disposición crea o regula órganos, la composición equilibrada es también una obligación derivada del artículo 26.1 del DL 1/2023"}
+]}
+];
+
+const ct=document.getElementById('dims');
+D.forEach(dim=>{
+  let mhtml='';
+  dim.m.forEach((med,i)=>{
+    const uid=dim.id+'_m'+i;
+    mhtml+=`<div class="measure-item">
+      <label class="measure-header">
+        <input type="checkbox" id="${uid}" onchange="tog(this)">
+        <div><div class="measure-title">${med.t}</div></div>
+      </label>
+      <div class="measure-desc">${med.d}</div>
+      <div class="measure-detail" id="det_${uid}">
+        <div class="measure-detail-label">Describa la medida concreta que la disposición incorpora, el artículo donde se recoge y el resultado esperado:</div>
+        <textarea placeholder="Ej: El art. 12 establece..." oninput="upd()"></textarea>
+      </div>
+    </div>`;
+  });
+
+  ct.innerHTML+=`<div class="dimension ${dim.c}" id="${dim.id}">
+    <div class="dim-header" onclick="flip('${dim.id}')">
+      <div class="dim-number">${dim.n}</div>
+      <h2>${dim.t}</h2>
+      <span class="arrow">&#9654;</span>
+    </div>
+    <div class="dim-body">
+      <div class="flow-indicator">
+        <span class="flow-step phase-diag">Diagnóstico</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step phase-med">Medidas</span>
+        <span class="flow-arrow">&rarr;</span>
+        <span class="flow-step phase-prev">Previsión</span>
+      </div>
+      <div class="phase phase-diag">PASO 1 — Diagnóstico de situación</div>
+      <div class="instruction">${dim.di}</div>
+      <textarea placeholder="Describa aquí el diagnóstico de esta dimensión, con datos desagregados por sexo y fuentes..."></textarea>
+      <div class="phase phase-med">PASO 2 — Medidas para esta dimensión</div>
+      <div class="instruction">A la luz de las brechas identificadas en el diagnóstico, seleccione los tipos de medida que la disposición incorpora o debería incorporar. Para cada uno, describa la acción concreta.</div>
+      ${mhtml}
+      <div class="phase phase-prev">PASO 3 — Previsión de impacto</div>
+      <div class="instruction">${dim.pi}</div>
+      <textarea placeholder="Describa aquí la previsión de impacto, vinculada a las medidas seleccionadas..."></textarea>
+    </div>
+  </div>`;
+});
+
+function flip(id){
+  const d=document.getElementById(id);
+  d.querySelector('.dim-header').classList.toggle('open');
+  d.querySelector('.dim-body').classList.toggle('open');
+}
+function tog(cb){
+  const det=cb.closest('.measure-item').querySelector('.measure-detail');
+  det.classList.toggle('open',cb.checked);
+  upd();
+}
+function upd(){
+  let act=0,desc=0;
+  document.querySelectorAll('.measure-item input[type="checkbox"]').forEach(cb=>{
+    if(cb.checked){
+      act++;
+      const ta=cb.closest('.measure-item').querySelector('.measure-detail textarea');
+      if(ta&&ta.value.trim())desc++;
+    }
+  });
+  document.getElementById('s-act').textContent=act+' de 20';
+  document.getElementById('s-desc').textContent=desc;
+}
+</script>
+</body>
+</html>
