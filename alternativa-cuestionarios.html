@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alternativa: cuestionarios por tipo de instrumento | EPIG Bilbao</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple-dark:#4A1070;--purple:#7B2D8E;--fuchsia:#C2185B;--red:#E53935;
+  --orange:#FF6F00;--amber:#FFB300;--yellow:#FFD54F;--green:#43a047;
+  --bg:#faf8fc;--text:#2d1b4e;--text-light:#6b5b7b;--text-muted:#9b8bab;
+  --card:#ffffff;--border:#e8ddf0;
+  --gradient:linear-gradient(135deg,#4A1070,#7B2D8E,#C2185B,#E53935,#FF6F00,#FFB300,#FFD54F);
+  --gradient-h:linear-gradient(90deg,#4A1070,#7B2D8E,#C2185B,#E53935,#FF6F00,#FFB300,#FFD54F);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat','Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:16px}
+
+.hero{background:var(--gradient);padding:3rem 2rem 2.5rem;color:white;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,transparent 100%)}
+.hero-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
+.hero h1{font-size:1.7rem;font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 12px rgba(0,0,0,.18);margin-bottom:.3rem}
+.hero .subtitle{font-size:.9rem;font-weight:400;opacity:.9;text-shadow:0 1px 6px rgba(0,0,0,.15)}
+
+nav{background:white;border-bottom:3px solid transparent;border-image:var(--gradient-h) 1;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(74,16,112,.08);overflow-x:auto}
+nav .nav-inner{max-width:900px;margin:0 auto;display:flex;gap:0}
+nav a{padding:.7rem 1rem;font-size:.75rem;font-weight:600;color:var(--text-light);text-decoration:none;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;white-space:nowrap}
+nav a:hover{color:var(--purple)}
+nav a.active{color:var(--purple-dark);border-bottom-color:var(--purple)}
+
+main{max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+/* CONTEXT BOX */
+.context{background:var(--card);border-radius:12px;padding:2rem 2.5rem;margin-bottom:2rem;border:1px solid var(--border)}
+.context h2{font-size:1.15rem;font-weight:700;color:var(--purple-dark);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:2px solid var(--border)}
+.context p{font-size:.88rem;margin-bottom:.8rem}
+.context strong{color:var(--purple-dark)}
+
+/* TYPE SECTION */
+.type-section{margin-bottom:2.5rem}
+.type-header{background:var(--gradient);border-radius:12px 12px 0 0;padding:1.3rem 2rem;color:white;position:relative}
+.type-header h2{font-size:1.1rem;font-weight:800;letter-spacing:-.01em}
+.type-header .type-sub{font-size:.8rem;font-weight:400;opacity:.85;margin-top:.2rem}
+.type-body{background:var(--card);border-radius:0 0 12px 12px;padding:1.8rem 2rem;border:1px solid var(--border);border-top:none}
+.type-body p{font-size:.88rem;margin-bottom:.8rem}
+.type-body strong{color:var(--purple-dark)}
+
+/* SOURCE TAG */
+.source-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;padding:.3rem .7rem;border-radius:5px;margin-bottom:.8rem;margin-right:.4rem}
+.source-tag.emakunde{background:#e8f5e9;color:var(--green)}
+.source-tag.estandares{background:#e3f2fd;color:#1565c0}
+.source-tag.bilbao{background:#f3e5f5;color:var(--purple)}
+.source-tag.ley{background:#fff8e1;color:var(--orange)}
+
+/* BLOCK */
+.block{margin:1.2rem 0;border-radius:8px;border:1px solid var(--border);overflow:hidden}
+.block-head{background:var(--bg);padding:.7rem 1.2rem;font-weight:700;font-size:.88rem;color:var(--purple-dark);display:flex;align-items:center;gap:.6rem;border-bottom:1px solid var(--border)}
+.block-icon{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.75rem;color:white;flex-shrink:0}
+.block-items{padding:.6rem 1.2rem}
+.block-item{padding:.5rem 0;border-bottom:1px solid rgba(0,0,0,.04);font-size:.84rem;line-height:1.55;color:var(--text)}
+.block-item:last-child{border-bottom:none}
+.block-item .q{color:var(--text)}
+.block-item .then{color:var(--fuchsia);font-weight:600;font-size:.8rem;margin-top:.15rem;display:block}
+.block-item .ref{color:var(--text-muted);font-size:.72rem;font-style:italic;display:block;margin-top:.1rem}
+
+/* CONDITIONAL */
+.conditional{margin:1rem 0;background:var(--bg);border-radius:10px;padding:1.2rem 1.5rem;border:2px solid var(--border)}
+.conditional-q{font-weight:700;font-size:.9rem;color:var(--purple-dark);margin-bottom:.8rem}
+.cond-option{display:flex;gap:.8rem;align-items:flex-start;padding:.5rem 0;border-bottom:1px solid var(--border)}
+.cond-option:last-child{border-bottom:none}
+.cond-label{background:var(--purple);color:white;font-weight:800;font-size:.72rem;padding:.2rem .5rem;border-radius:4px;flex-shrink:0;min-width:24px;text-align:center}
+.cond-text{font-size:.84rem;color:var(--text)}
+.cond-text strong{color:var(--purple-dark)}
+.cond-arrow{color:var(--fuchsia);font-weight:700;margin:0 .2rem}
+
+/* COMMON BLOCK */
+.common{background:linear-gradient(135deg,var(--purple-dark),var(--purple));border-radius:10px;padding:1.3rem 1.5rem;margin-top:1.2rem;color:white}
+.common h4{font-weight:700;font-size:.88rem;margin-bottom:.6rem;color:var(--yellow)}
+.common-item{font-size:.82rem;padding:.3rem 0;opacity:.9;line-height:1.5}
+
+/* COMPARISON */
+.comparison{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1.5rem 0}
+.comp-card{border-radius:10px;padding:1.3rem 1.5rem;border:1px solid var(--border)}
+.comp-card.current{background:#fce4ec}
+.comp-card.alt{background:#e8f5e9}
+.comp-card h3{font-size:.92rem;font-weight:700;margin-bottom:.6rem}
+.comp-card.current h3{color:var(--red)}
+.comp-card.alt h3{color:var(--green)}
+.comp-card p{font-size:.82rem;color:var(--text-light);margin-bottom:.4rem;line-height:1.5}
+.comp-card ul{font-size:.82rem;margin:.4rem 0 0 1rem;color:var(--text-light);line-height:1.5}
+.comp-card li{margin-bottom:.3rem}
+
+/* SUMMARY TABLE */
+.sum-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:1.2rem 0}
+.sum-table th{background:var(--purple-dark);color:white;padding:.6rem .8rem;text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+.sum-table td{padding:.55rem .8rem;border-bottom:1px solid var(--border);vertical-align:top}
+.sum-table tr:nth-child(even) td{background:var(--bg)}
+
+/* CASCADE */
+.cascade{margin:1.2rem 0}
+.cascade-step{display:flex;gap:0;margin-bottom:2px}
+.cascade-bar{width:50px;display:flex;flex-direction:column;align-items:center;flex-shrink:0;position:relative}
+.cascade-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.72rem;color:white;z-index:1}
+.cascade-line{flex:1;width:3px;background:var(--border)}
+.cascade-step:last-child .cascade-line{display:none}
+.cascade-content{flex:1;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem 1.3rem;margin-bottom:.3rem}
+.cascade-content h4{font-weight:700;font-size:.88rem;color:var(--purple-dark);margin-bottom:.4rem}
+.cascade-content p{font-size:.84rem;color:var(--text);margin-bottom:.3rem;line-height:1.5}
+.cascade-content .cascade-q{font-weight:600;color:var(--fuchsia);font-size:.82rem;margin-top:.4rem}
+.cascade-content .cascade-depth{font-size:.78rem;color:var(--text-light);font-style:italic;margin-top:.2rem}
+.cascade-arrow{text-align:center;color:var(--fuchsia);font-size:1.2rem;margin:-.2rem 0;padding-left:50px}
+
+/* TRANSVERSAL */
+.transversal{background:linear-gradient(135deg,var(--purple-dark),var(--purple));border-radius:10px;padding:1.5rem 1.8rem;margin-top:1.5rem;color:white}
+.transversal h3{font-weight:700;font-size:.95rem;color:var(--yellow);margin-bottom:.8rem}
+.transversal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.transversal-item{background:rgba(255,255,255,.1);border-radius:6px;padding:.6rem .8rem;font-size:.82rem;line-height:1.45}
+.transversal-item strong{color:var(--yellow)}
+
+@media(max-width:800px){main{padding:1rem .8rem 4rem}.comparison{grid-template-columns:1fr}.transversal-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Alternativa: cuestionarios específicos por tipo de instrumento</h1>
+    <div class="subtitle">Posibles contenidos para cuestionarios diferenciados por tipo de instrumento</div>
+  </div>
+</div>
+
+<nav>
+<div class="nav-inner">
+  <a href="#contexto">Contexto</a>
+  <a href="#planes">Planes estratégicos</a>
+  <a href="#ordenanzas">Ordenanzas</a>
+  <a href="#reglamentos">Reglamentos</a>
+  <a href="#urbanismo">Inst. urbanísticos</a>
+  <a href="#soportales">Soportales</a>
+  <a href="#sintesis">Síntesis</a>
+</div>
+</nav>
+
+<main>
+
+<!-- CONTEXTO -->
+<div class="context" id="contexto">
+<h2>Contexto de esta propuesta</h2>
+
+<p>El informe diagnóstico propone <strong>reorganizar el formulario actual por dimensiones</strong>, simplificando el catálogo de medidas y adaptándolas a cada dimensión. Esa reorganización reduciría el número de medidas respecto al catálogo actual de 37, facilitaría la conexión entre diagnóstico y medidas, y —acompañada de orientación técnica inicial, seguimiento y devolución con carácter formativo— permitiría análisis más profundos. Sin embargo, requiere un nivel de acompañamiento y recursos que puede no estar disponible de forma inmediata.</p>
+
+<p>Si se decide que esa vía no es viable a corto plazo, existe una <strong>alternativa</strong>: sustituir el formulario único por <strong>cuestionarios diferenciados por tipo de instrumento</strong>, con preguntas verificables adaptadas a lo que cada tipo de documento regula.</p>
+
+<div class="comparison">
+  <div class="comp-card current">
+    <h3>Opción A: formulario reorganizado por dimensiones</h3>
+    <p>Un formulario que reorganiza el proceso por dimensiones (diagnóstico → medidas → previsión en cada dimensión), con un catálogo de medidas simplificado y adaptado. Un mismo formulario para todo tipo de instrumento.</p>
+    <ul>
+      <li>Requiere acompañamiento técnico: orientación al inicio, seguimiento y devolución formativa</li>
+      <li>Produce análisis más profundos y con mayor capacidad transformadora</li>
+      <li>La simplificación del catálogo de medidas facilita la cumplimentación respecto al modelo actual</li>
+      <li>Mayor inversión en formación y recursos</li>
+    </ul>
+  </div>
+  <div class="comp-card alt">
+    <h3>Opción B: cuestionarios por tipo de instrumento</h3>
+    <p>Un cuestionario distinto para cada tipo de documento (planes, ordenanzas, reglamentos, instrumentos urbanísticos), con preguntas concretas que cualquier persona técnica puede responder mirando el documento.</p>
+    <ul>
+      <li>No requiere formación especializada previa</li>
+      <li>Se puede rellenar en menos de una hora</li>
+      <li>Cada pregunta tiene base legal y criterio de verificación</li>
+      <li>Menos profundo pero más aplicable con recursos limitados</li>
+    </ul>
+  </div>
+</div>
+
+<p>Ambas opciones implican simplificación respecto al modelo actual. La diferencia es la <strong>profundidad del análisis</strong> y el <strong>nivel de acompañamiento</strong> que requieren. No son excluyentes: podrían coexistir como mínimo obligatorio (cuestionarios por tipo) y análisis ampliado (formulario dimensional) cuando la Dirección de Igualdad lo considere pertinente o cuando los recursos lo permitan.</p>
+</div>
+
+
+<!-- ═══════ PLANES ESTRATÉGICOS ═══════ -->
+<div class="type-section" id="planes">
+<div class="type-header">
+  <h2>Planes estratégicos y programas</h2>
+  <div class="type-sub">9 de 15 expedientes de Anexo I · El tipo de instrumento más frecuente</div>
+</div>
+<div class="type-body">
+
+<div style="margin-bottom:1rem">
+  <span class="source-tag estandares">Estándares de Calidad Emakunde</span>
+  <span class="source-tag ley">DL 1/2023 arts. 16, 19, 20, 25, 26</span>
+</div>
+
+<p>Los planes estratégicos son documentos programáticos con diagnóstico, objetivos, líneas de actuación, acciones, indicadores y horizonte temporal. El cuestionario no se organiza como una lista plana de preguntas, sino como una <strong>lógica en cascada</strong>: cada paso depende del anterior. La idea es que quien cumplimenta pueda ver, eje por eje de su plan, si el circuito diagnóstico → brechas → objetivos → medidas → indicadores se cierra o se rompe en algún punto. Las cuestiones transversales se verifican de forma independiente.</p>
+
+<h3>Lógica en cascada: el circuito diagnóstico-medidas eje por eje</h3>
+
+<div class="cascade">
+
+  <div class="cascade-step">
+    <div class="cascade-bar"><div class="cascade-dot" style="background:var(--purple)">1</div><div class="cascade-line"></div></div>
+    <div class="cascade-content">
+      <h4>Datos desagregados por sexo en el diagnóstico</h4>
+      <p>¿El diagnóstico del plan recoge datos desagregados por sexo?</p>
+      <div class="cascade-q">→ ¿Para cuántos ejes o ámbitos del plan? ¿Para todos, para algunos o solo de forma puntual?</div>
+      <div class="cascade-depth">No es lo mismo un plan que desagrega datos en todos sus ejes (p. ej. Plan de Cooperación) que uno que lo hace solo en un apartado como si fuera un acento decorativo (p. ej. Agenda 2030). Indicar: en ___ de ___ ejes del plan se recogen datos desagregados.</div>
+    </div>
+  </div>
+
+  <div class="cascade-step">
+    <div class="cascade-bar"><div class="cascade-dot" style="background:var(--fuchsia)">2</div><div class="cascade-line"></div></div>
+    <div class="cascade-content">
+      <h4>Identificación de brechas de género</h4>
+      <p>A partir de los datos desagregados, ¿se identifican brechas o desigualdades entre mujeres y hombres?</p>
+      <div class="cascade-q">→ ¿En cuántos ejes se identifican brechas? ¿En todos los que tienen datos desagregados o solo en algunos?</div>
+      <div class="cascade-depth">Tener datos no es lo mismo que analizarlos. Un plan puede desagregar datos en 5 ejes pero solo identificar brechas en 2. Indicar: en ___ de ___ ejes con datos desagregados se identifican brechas concretas.</div>
+    </div>
+  </div>
+
+  <div class="cascade-step">
+    <div class="cascade-bar"><div class="cascade-dot" style="background:var(--red)">3</div><div class="cascade-line"></div></div>
+    <div class="cascade-content">
+      <h4>Objetivos de subsanación para las brechas identificadas</h4>
+      <p>Para las brechas identificadas, ¿el plan formula objetivos dirigidos a corregirlas?</p>
+      <div class="cascade-q">→ ¿Para todas las brechas identificadas o solo para algunas?</div>
+      <div class="cascade-depth">Aquí es donde se rompe el circuito en muchos planes: identifican la brecha pero no se proponen corregirla. Indicar: en ___ de ___ brechas identificadas se formulan objetivos de subsanación.</div>
+    </div>
+  </div>
+
+  <div class="cascade-step">
+    <div class="cascade-bar"><div class="cascade-dot" style="background:var(--orange)">4</div><div class="cascade-line"></div></div>
+    <div class="cascade-content">
+      <h4>Medidas concretas para los objetivos formulados</h4>
+      <p>Para los objetivos de subsanación, ¿se proponen medidas o acciones concretas?</p>
+      <div class="cascade-q">→ ¿Qué tipo de medidas? ¿Son acciones específicas y verificables o declaraciones genéricas?</div>
+      <div class="cascade-depth">No vale "promover la igualdad": tiene que haber una acción concreta, con responsable identificable, vinculada a una brecha diagnosticada. Indicar: para ___ de ___ objetivos se proponen medidas concretas.</div>
+    </div>
+  </div>
+
+  <div class="cascade-step">
+    <div class="cascade-bar"><div class="cascade-dot" style="background:var(--amber)">5</div><div class="cascade-line"></div></div>
+    <div class="cascade-content">
+      <h4>Indicadores de seguimiento para las medidas</h4>
+      <p>Para las medidas propuestas, ¿se definen indicadores de seguimiento desagregados por sexo?</p>
+      <div class="cascade-q">→ ¿Los indicadores permiten medir si la brecha se está cerrando?</div>
+      <div class="cascade-depth">El circuito se cierra aquí: un dato desagregado → una brecha → un objetivo → una medida → un indicador que permite saber si ha funcionado. Indicar: para ___ de ___ medidas se definen indicadores desagregados.</div>
+    </div>
+  </div>
+
+</div>
+
+<p style="font-size:.85rem;color:var(--text-light);margin-top:1rem">La cascada permite visualizar <strong>en qué paso se rompe el circuito</strong> en cada plan concreto. Un plan que desagrega datos en todos los ejes pero no identifica brechas se rompe en el paso 2. Un plan que identifica brechas pero no propone medidas se rompe en el paso 4. La información resultante es mucho más útil para la mejora que un simple "cumple / no cumple".</p>
+
+<h3>Cuestiones transversales</h3>
+
+<div class="transversal">
+  <h3>Se verifican de forma independiente a la cascada</h3>
+  <div class="transversal-grid">
+    <div class="transversal-item"><strong>Lenguaje no sexista:</strong> ¿el texto del plan utiliza lenguaje no sexista de forma sistemática en todo el documento?</div>
+    <div class="transversal-item"><strong>Marco normativo:</strong> ¿se cita el DL 1/2023 y/o la Ordenanza de Igualdad de Bilbao?</div>
+    <div class="transversal-item"><strong>Consulta a Igualdad:</strong> ¿se ha informado o consultado a la Dirección de Igualdad durante la elaboración del plan (no solo para la verificación)?</div>
+    <div class="transversal-item"><strong>Participación de Igualdad:</strong> ¿participa la Dirección de Igualdad en las estructuras de gestión o seguimiento del plan?</div>
+    <div class="transversal-item"><strong>Asesoramiento experto:</strong> ¿se ha contado con algún tipo de persona experta o asesoramiento externo para incorporar la perspectiva de género?</div>
+    <div class="transversal-item"><strong>Participación equilibrada (proceso):</strong> si hubo proceso participativo, ¿ha habido una participación equilibrada de mujeres y hombres? ¿Se desagregaron los datos?</div>
+    <div class="transversal-item"><strong>Participación equilibrada (órganos):</strong> en los órganos de representación, gestión y seguimiento del plan, ¿hay composición equilibrada?</div>
+    <div class="transversal-item"><strong>Toma de decisiones:</strong> en los espacios de toma de decisiones del plan, ¿hay participación equilibrada de mujeres y hombres?</div>
+  </div>
+</div>
+
+</div>
+</div>
+
+
+<!-- ═══════ ORDENANZAS ═══════ -->
+<div class="type-section" id="ordenanzas">
+<div class="type-header">
+  <h2>Ordenanzas</h2>
+  <div class="type-sub">5 expedientes en la muestra · Crean obligaciones y derechos directos para la ciudadanía</div>
+</div>
+<div class="type-body">
+
+<div style="margin-bottom:1rem">
+  <span class="source-tag bilbao">Tipologías del Ayuntamiento de Bilbao</span>
+  <span class="source-tag ley">DL 1/2023</span>
+  <span class="source-tag estandares">Dimensiones EPIG adaptadas</span>
+</div>
+
+<p>Las ordenanzas regulan cosas muy distintas: tributos, espacio público, convivencia, servicios. Lo que hay que comprobar depende de qué regula cada una. El cuestionario se inspira en las <strong>tipologías reales de los expedientes del Ayuntamiento</strong> y traduce las dimensiones de la EPIG a preguntas concretas sobre el contenido regulatorio de cada tipo de ordenanza. El cuestionario arrancaría con una <strong>pregunta de clasificación</strong>:</p>
+
+<div class="conditional">
+  <div class="conditional-q">¿Qué regula esta ordenanza?</div>
+  <div class="cond-option"><span class="cond-label">A</span><span class="cond-text"><strong>Tributos, tasas o prestaciones económicas</strong> (quién paga, cuánto, bonificaciones) <span class="cond-arrow">→</span> Bloque fiscal</span></div>
+  <div class="cond-option"><span class="cond-label">B</span><span class="cond-text"><strong>Uso del espacio público</strong> (terrazas, obras, aparcamientos, mercadillos) <span class="cond-arrow">→</span> Bloque espacio</span></div>
+  <div class="cond-option"><span class="cond-label">C</span><span class="cond-text"><strong>Convivencia, actividades o comportamientos</strong> (obligaciones, prohibiciones, sanciones) <span class="cond-arrow">→</span> Bloque convivencia</span></div>
+  <div class="cond-option"><span class="cond-label">D</span><span class="cond-text"><strong>Condiciones de acceso y precio de un servicio público</strong> <span class="cond-arrow">→</span> Bloque servicio + bloque fiscal</span></div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--purple)">A</div> Bloque fiscal — Si regula tributos, tasas o prestaciones económicas</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se ha valorado si el perfil de las personas obligadas al pago tiene composición diferenciada por sexo?</span><span class="then">P. ej. en mercados: ¿quién tiene los puestos? En cementerios: ¿quién gestiona las sepulturas?</span></div>
+    <div class="block-item"><span class="q">¿Se ha analizado la capacidad económica diferenciada de mujeres y hombres para asumir el pago?</span><span class="ref">Feminización de la pobreza, brecha salarial, pensiones más bajas</span></div>
+    <div class="block-item"><span class="q">¿Las bonificaciones o exenciones contemplan colectivos con dimensión de género?</span><span class="then">Familias monomarentales, mujeres víctimas de violencia machista, personas con pensiones no contributivas</span></div>
+    <div class="block-item"><span class="q">¿Se ha valorado si las consecuencias del impago afectan desproporcionadamente a personas en situación de vulnerabilidad económica?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--fuchsia)">B</div> Bloque espacio — Si regula el uso del espacio público</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se ha considerado que mujeres y hombres usan el espacio público de forma diferente?</span><span class="then">Las mujeres se desplazan más a pie, pasan más tiempo en el espacio de proximidad, encadenan más actividades de cuidado</span></div>
+    <div class="block-item"><span class="q">¿La regulación de actividades que ocupan espacio peatonal (terrazas, obras) ha valorado el impacto sobre la circulación peatonal?</span><span class="then">Especialmente para personas con carritos, sillas de ruedas o movilidad reducida — desplazamientos vinculados al cuidado</span></div>
+    <div class="block-item"><span class="q">¿Se ha valorado el impacto sobre la visibilidad, la iluminación y la percepción de seguridad de las mujeres?</span></div>
+    <div class="block-item"><span class="q">¿Se ha valorado el impacto sobre el comercio de proximidad?</span><span class="ref">La proximidad comercial es especialmente relevante para las personas cuidadoras</span></div>
+    <div class="block-item"><span class="q">¿Se han considerado los horarios regulados y su impacto nocturno diferenciado?</span><span class="ref">Las mujeres limitan más sus desplazamientos nocturnos por percepción de inseguridad</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--red)">C</div> Bloque convivencia — Si regula comportamientos, obligaciones o sanciones</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se incluyen comportamientos prohibidos relacionados con el acoso callejero, la violencia sexual en el espacio público o la publicidad sexista?</span></div>
+    <div class="block-item"><span class="q">¿Las prohibiciones afectan a actividades que mujeres y hombres realizan de forma diferente?</span><span class="then">P. ej. la prohibición de transportar personas en BilbaoBizi afectaba a desplazamientos de cuidado con menores</span></div>
+    <div class="block-item"><span class="q">¿Se tipifican infracciones relacionadas con la discriminación por razón de sexo?</span></div>
+    <div class="block-item"><span class="q">¿Las sanciones económicas son proporcionales a la capacidad económica? ¿Se ha considerado el impacto diferenciado por sexo?</span></div>
+    <div class="block-item"><span class="q">¿Se conoce la composición por sexo de las personas titulares o responsables en el ámbito regulado?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--orange)">D</div> Bloque servicio — Si regula acceso y condiciones de un servicio público</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se identifican las personas destinatarias por sexo o perfil?</span></div>
+    <div class="block-item"><span class="q">¿Algún requisito de acceso puede generar una barrera diferenciada por sexo?</span><span class="then">Necesidad de vehículo propio, disponibilidad horaria, capacidad económica</span></div>
+    <div class="block-item"><span class="q">¿Los horarios del servicio son compatibles con los patrones de movilidad y cuidado diferenciados por sexo?</span></div>
+    <div class="block-item"><span class="q">¿El servicio genera registros de uso? ¿Se prevé que se desagreguen por sexo?</span><span class="ref">Art. 16 DL 1/2023</span></div>
+  </div>
+</div>
+
+<div class="common">
+  <h4>Comunes a todas las ordenanzas</h4>
+  <div class="common-item">· ¿Utiliza lenguaje no sexista en todo el articulado?</div>
+  <div class="common-item">· ¿Cita el marco normativo de igualdad?</div>
+  <div class="common-item">· ¿Prevé desagregación por sexo en los registros que genere?</div>
+  <div class="common-item">· Si hubo participación ciudadana en su elaboración, ¿se desagregaron datos por sexo?</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- ═══════ REGLAMENTOS ═══════ -->
+<div class="type-section" id="reglamentos">
+<div class="type-header">
+  <h2>Reglamentos</h2>
+  <div class="type-sub">4 expedientes en la muestra · Regulan la organización y funcionamiento de órganos o servicios</div>
+</div>
+<div class="type-body">
+
+<div style="margin-bottom:1rem">
+  <span class="source-tag bilbao">Tipologías del Ayuntamiento de Bilbao</span>
+  <span class="source-tag ley">DL 1/2023 art. 26</span>
+  <span class="source-tag estandares">Dimensiones EPIG adaptadas</span>
+</div>
+
+<p>Un reglamento no es un documento abierto como un plan: regula cosas concretas, y lo que hay que comprobar depende de <strong>qué</strong> regula. En la muestra de Bilbao, los reglamentos regulan o bien <strong>órganos colegiados</strong> (quién se sienta en la mesa) o bien <strong>servicios públicos</strong> (cómo se accede, cuánto se paga, qué se prohíbe). Son dos lógicas distintas.</p>
+
+<div class="conditional">
+  <div class="conditional-q">¿Qué regula este reglamento?</div>
+  <div class="cond-option"><span class="cond-label">A</span><span class="cond-text"><strong>Un órgano colegiado</strong> (consejo, comisión, mesa, jurado) <span class="cond-arrow">→</span> Bloque órgano</span></div>
+  <div class="cond-option"><span class="cond-label">B</span><span class="cond-text"><strong>Un servicio público</strong> (condiciones de acceso, uso, tarifas) <span class="cond-arrow">→</span> Bloque servicio</span></div>
+  <div class="cond-option"><span class="cond-label">C</span><span class="cond-text"><strong>Un procedimiento interno</strong> de la administración <span class="cond-arrow">→</span> Bloque procedimiento</span></div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--purple)">A</div> Bloque órgano — Si regula un órgano colegiado</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Prevé composición paritaria o criterio de representación equilibrada?</span><span class="ref">Art. 26.1 DL 1/2023 — presencia equilibrada en órganos colegiados</span></div>
+    <div class="block-item"><span class="q">¿La redacción de los perfiles de miembros utiliza lenguaje no sexista?</span></div>
+    <div class="block-item"><span class="q">¿El criterio de paridad se extiende a las suplencias?</span></div>
+    <div class="block-item"><span class="q">¿Los horarios o frecuencia de reuniones se han valorado desde la conciliación con responsabilidades de cuidado?</span></div>
+    <div class="block-item"><span class="q">¿Se ofrecen opciones de participación telemática que faciliten la conciliación?</span></div>
+    <div class="block-item"><span class="q">¿El órgano produce informes o datos? ¿Se prevé que incluyan perspectiva de género o datos desagregados?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--fuchsia)">B</div> Bloque servicio — Si regula un servicio público</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Los requisitos de acceso generan barreras diferenciadas por sexo?</span><span class="then">Necesidad de vehículo propio, disponibilidad horaria, capacidad económica</span></div>
+    <div class="block-item"><span class="q">¿Las tarifas contemplan bonificaciones para colectivos con dimensión de género?</span><span class="then">Familias monomarentales, mujeres víctimas de violencia, rentas bajas</span></div>
+    <div class="block-item"><span class="q">¿Los horarios del servicio se han valorado desde los patrones de movilidad y cuidado diferenciados por sexo?</span></div>
+    <div class="block-item"><span class="q">¿Las prohibiciones o restricciones pueden afectar de forma diferente a mujeres y hombres?</span><span class="then">Ejemplo real: prohibición de transportar personas en BilbaoBizi y desplazamientos de cuidado</span></div>
+    <div class="block-item"><span class="q">¿Los registros de uso del servicio se prevé que se desagreguen por sexo?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--red)">C</div> Bloque procedimiento — Si regula un procedimiento interno</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿El procedimiento determina cómo se presta un servicio a la ciudadanía?</span><span class="then">Si sí → aplican las preguntas del bloque servicio</span></div>
+    <div class="block-item"><span class="q">¿El procedimiento afecta a las condiciones de trabajo del personal?</span><span class="then">Si sí → ¿se ha considerado el impacto diferencial sobre la plantilla por sexo?</span></div>
+  </div>
+</div>
+
+<div class="common">
+  <h4>Comunes a todos los reglamentos</h4>
+  <div class="common-item">· ¿Utiliza lenguaje no sexista de forma sistemática?</div>
+  <div class="common-item">· ¿Cita el marco normativo de igualdad?</div>
+  <div class="common-item">· ¿Prevé desagregación por sexo en los datos o memorias que genere?</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- ═══════ INSTRUMENTOS URBANÍSTICOS ═══════ -->
+<div class="type-section" id="urbanismo">
+<div class="type-header">
+  <h2>Instrumentos de planificación urbanística</h2>
+  <div class="type-sub">2 expedientes (exentos) · Deciden sobre tipología edificatoria, espacios, equipamientos, itinerarios</div>
+</div>
+<div class="type-body">
+
+<div style="margin-bottom:1rem">
+  <span class="source-tag emakunde">Guía Emakunde: Planificación territorial y urbanismo</span>
+  <span class="source-tag ley">DL 1/2023 art. 20.7</span>
+</div>
+
+<p>Los contenidos de este cuestionario se basan en la <strong>guía de Emakunde "La Evaluación de Impacto en Función del Género en la Planificación Territorial y el Urbanismo"</strong> (Red2Red, actualizada 2022), simplificada en bloques verificables. La guía articula el análisis de género urbanístico en torno a la <strong>cadena de cuidados como eje vertebrador</strong> del diseño urbano, no limitándose a la seguridad en el espacio público sino abarcando movilidad, equipamientos, vivienda, usos del suelo y modelo urbano.</p>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--purple)">A</div> Movilidad y proximidad</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se evalúa la red de desplazamientos a pie en el ámbito de intervención?</span><span class="ref">Emakunde: las mujeres se desplazan más a pie (52% vs. 42% hombres en la CAE)</span></div>
+    <div class="block-item"><span class="q">¿Se valora la accesibilidad al transporte público desde el ámbito del plan?</span><span class="ref">Emakunde: hasta el 70% de personas usuarias del TP son mujeres</span></div>
+    <div class="block-item"><span class="q">¿Se consideran los desplazamientos encadenados (poligonales) vinculados a las tareas de cuidado?</span></div>
+    <div class="block-item"><span class="q">¿Se analiza la conectividad peatonal con equipamientos de proximidad?</span><span class="ref">Emakunde: modelo de ciudad de distancias cortas, la "ciudad de los 15 minutos"</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--fuchsia)">B</div> Equipamientos y cadena de cuidados</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿El plan modifica la dotación o accesibilidad de equipamientos de cuidado (educativos, sanitarios, asistenciales)?</span></div>
+    <div class="block-item"><span class="q">¿Se valora si la intervención acerca o aleja los servicios de proximidad?</span><span class="ref">Emakunde: evitar la desconexión territorial de los equipamientos</span></div>
+    <div class="block-item"><span class="q">¿Se prevén dotaciones para equipamientos de proximidad vinculados al cuidado?</span></div>
+    <div class="block-item"><span class="q">¿Se considera el impacto sobre el comercio de proximidad del ámbito?</span><span class="ref">Emakunde: las mujeres realizan el 11,6% de desplazamientos por compras vs. 5,5% hombres</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--red)">C</div> Vivienda</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se modifica la tipología de vivienda? Si sí: ¿se considera la diversidad de formas de convivencia?</span><span class="then">Hogares monomarentales (81% encabezados por mujeres), personas mayores solas (mayoritariamente mujeres)</span></div>
+    <div class="block-item"><span class="q">¿Se prevén viviendas accesibles y adaptables a distintos ciclos de vida?</span></div>
+    <div class="block-item"><span class="q">¿Se valora el impacto sobre el precio y la accesibilidad económica de la vivienda?</span><span class="ref">Emakunde: mayor dificultad de acceso a vivienda de mujeres no emparejadas, familias monomarentales y víctimas de violencia</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--orange)">D</div> Seguridad y percepción</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se valora la percepción de seguridad de las mujeres en el espacio público del ámbito?</span><span class="ref">Emakunde: 40% de mujeres perciben su barrio como peligroso a ciertas horas vs. 22% hombres (Bilbao)</span></div>
+    <div class="block-item"><span class="q">¿Se consideran criterios de visibilidad, iluminación y vitalidad del espacio?</span><span class="then">Mezcla de usos que genere presencia de personas a distintas horas como "vigilancia pasiva"</span></div>
+    <div class="block-item"><span class="q">¿Se analizan los itinerarios peatonales nocturnos y su percepción diferenciada por sexo?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--amber)">E</div> Usos del suelo y modelo urbano</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se fomenta la mezcla de usos (residencial, comercial, dotacional) frente a la zonificación monofuncional?</span><span class="ref">Emakunde: modelo de ciudad compacta, densa, de proximidad, con mezcla de usos</span></div>
+    <div class="block-item"><span class="q">¿Se valora la compacidad y la densidad desde la perspectiva de la proximidad?</span></div>
+    <div class="block-item"><span class="q">¿Se identifican vacíos urbanos o espacios residuales y su impacto sobre seguridad y conectividad?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--green)">F</div> Espacio público y representación</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">Si se interviene sobre el espacio público: ¿se aplican criterios de diseño inclusivo?</span><span class="then">Accesibilidad universal, diversidad de cuerpos</span></div>
+    <div class="block-item"><span class="q">¿Se considera la nomenclatura y la representación de las mujeres en el espacio público?</span><span class="ref">Emakunde: solo 28 nombres femeninos en el callejero de Bilbao</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--purple-dark)">G</div> Datos y participación</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se dispone de datos desagregados por sexo de la población del ámbito?</span></div>
+    <div class="block-item"><span class="q">¿Se ha recogido la percepción diferenciada de mujeres y hombres sobre el ámbito?</span></div>
+    <div class="block-item"><span class="q">¿Se cita el art. 20.7 del DL 1/2023 (evaluación obligatoria de planes urbanísticos)?</span></div>
+    <div class="block-item"><span class="q">¿Se ha consultado la guía sectorial de Emakunde de planificación territorial y urbanismo?</span></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+
+<!-- ═══════ SOPORTALES ═══════ -->
+<div class="type-section" id="soportales">
+<div class="type-header">
+  <h2>Actuaciones del artículo 59.2B del PGOU (soportales)</h2>
+  <div class="type-sub">4 expedientes · Licencias de obras singulares para cerramientos por inseguridad</div>
+</div>
+<div class="type-body">
+
+<div style="margin-bottom:1rem">
+  <span class="source-tag emakunde">Guía Emakunde: Planificación territorial</span>
+  <span class="source-tag bilbao">Experiencia de los 4 expedientes analizados</span>
+  <span class="source-tag ley">Art. 59.2B PGOU · Art. 20.7 DL 1/2023</span>
+</div>
+
+<p>Los contenidos se basan en la <strong>experiencia acumulada en los cuatro expedientes analizados</strong> (Ugalde, Obras Menores, Manuel Allende, La Popular) y en los principios de diseño urbano con perspectiva de género de la guía sectorial de Emakunde. La estructura se simplifica a tres dimensiones, con la normativa ya preestablecida en el formulario.</p>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--purple)">1</div> Presencia — ¿Quién vive y transita el espacio?</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se aportan datos desagregados por sexo de las personas residentes en el entorno?</span></div>
+    <div class="block-item"><span class="q">¿Se identifican patrones de uso del espacio diferenciados por horario y por sexo?</span></div>
+    <div class="block-item"><span class="q">¿Se dispone de informes policiales o de servicios sociales sobre incidencias en el espacio?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--fuchsia)">2</div> Participación — ¿Qué perciben las mujeres?</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿Se ha recogido la percepción de inseguridad de las mujeres residentes o transeúntas, diferenciada de la percepción general?</span></div>
+    <div class="block-item"><span class="q">¿Se han identificado las situaciones concretas que generan esa percepción?</span></div>
+    <div class="block-item"><span class="q">¿Se ha recogido la valoración de las mujeres sobre la intervención propuesta (el cerramiento)?</span></div>
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-head"><div class="block-icon" style="background:var(--red)">3</div> Acceso a recursos — ¿Cómo afecta el cerramiento a la accesibilidad?</div>
+  <div class="block-items">
+    <div class="block-item"><span class="q">¿El cerramiento propuesto mantiene permeabilidad visual (se ve a través)?</span></div>
+    <div class="block-item"><span class="q">¿Se prevé iluminación adecuada del entorno?</span></div>
+    <div class="block-item"><span class="q">¿Se mantienen rutas peatonales alternativas?</span></div>
+    <div class="block-item"><span class="q">¿Se valora el impacto sobre la accesibilidad de los itinerarios para personas con movilidad reducida, carritos, etc.?</span></div>
+    <div class="block-item"><span class="q">¿Se especifican condiciones de diseño (materiales, altura, permeabilidad) como condiciones de la licencia?</span></div>
+  </div>
+</div>
+
+<p style="margin-top:1rem;font-size:.85rem;color:var(--text-light)"><strong>La Dimensión 5 (Normativa)</strong> vendría ya cumplimentada en el formulario: art. 59.2B del PGOU, art. 20.7 del DL 1/2023, art. 17 de la Ordenanza de Igualdad, normativa de accesibilidad. El departamento no necesitaría buscar las referencias normativas.</p>
+
+</div>
+</div>
+
+
+<!-- ═══════ SÍNTESIS ═══════ -->
+<div class="context" id="sintesis">
+<h2>Síntesis: el mapa de instrumentos</h2>
+
+<table class="sum-table">
+  <thead>
+    <tr><th>Tipo de instrumento</th><th>Clasificación previa</th><th>Bloques de contenido</th><th>Fuente principal</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><strong>Planes estratégicos</strong></td><td>No necesita</td><td>Lógica en cascada (datos → brechas → objetivos → medidas → indicadores) + cuestiones transversales</td><td>Estándares Emakunde + DL 1/2023</td></tr>
+    <tr><td><strong>Ordenanzas</strong></td><td>¿Qué regula? (tributos / espacio / convivencia / servicio)</td><td>Bloques condicionales según tipo + comunes</td><td>Tipologías de Bilbao + dimensiones EPIG adaptadas</td></tr>
+    <tr><td><strong>Reglamentos</strong></td><td>¿Qué regula? (órgano / servicio / procedimiento)</td><td>Bloques condicionales según tipo + comunes</td><td>Tipologías de Bilbao + dimensiones EPIG adaptadas</td></tr>
+    <tr><td><strong>Instrumentos urbanísticos</strong></td><td>No necesita</td><td>7 bloques (movilidad, equipamientos, vivienda, seguridad, usos, espacio, datos)</td><td>Guía Emakunde planificación territorial</td></tr>
+    <tr><td><strong>Soportales (art. 59.2B)</strong></td><td>No necesita</td><td>3 dimensiones + normativa preestablecida</td><td>Experiencia expedientes + Guía Emakunde</td></tr>
+  </tbody>
+</table>
+
+<p>Esta propuesta presenta los <strong>posibles contenidos</strong> de unos cuestionarios específicos por tipo de instrumento, como alternativa al formulario reorganizado por dimensiones. La diferencia fundamental entre ambas opciones es la profundidad del análisis: los cuestionarios por tipo permiten verificar estándares mínimos de forma rápida; el formulario dimensional permite un análisis más completo que, acompañado de orientación y seguimiento, tiene mayor capacidad transformadora.</p>
+
+<p>Si se opta por esta alternativa, los cuestionarios podrían implementarse como <strong>formularios digitales condicionales</strong>: la persona técnica selecciona el tipo de instrumento y automáticamente se despliegan los bloques pertinentes. La verificación por la Dirección de Igualdad se simplificaría a comprobar que se ha respondido a todos los bloques activados y que las respuestas son coherentes con el contenido del documento.</p>
+
+</div>
+
+</main>
+
+<script>
+// Nav active on scroll
+const obs = new IntersectionObserver(e => {
+  e.forEach(en => {
+    if(en.isIntersecting){
+      document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`nav a[href="#${en.target.id}"]`);
+      if(a) a.classList.add('active');
+    }
+  });
+}, {rootMargin: '-20% 0px -70% 0px'});
+document.querySelectorAll('[id]').forEach(s => {
+  if(s.id && document.querySelector(`nav a[href="#${s.id}"]`)) obs.observe(s);
+});
+</script>
+</body>
+</html>
